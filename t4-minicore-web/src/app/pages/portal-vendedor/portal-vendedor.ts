@@ -64,7 +64,7 @@ export class PortalVendedor implements OnInit {
         this.loading.set(false);
       },
       error: () => {
-        this.error.set('no se pudieron cargar tus ventas');
+        this.error.set('No se pudieron cargar tus ventas.');
         this.loading.set(false);
       }
     });
@@ -82,7 +82,7 @@ export class PortalVendedor implements OnInit {
         }
       },
       error: () => {
-        this.error.set('no se pudo calcular tu comision');
+        this.error.set('No se pudo calcular tu comisión.');
       }
     });
   }
@@ -92,7 +92,7 @@ export class PortalVendedor implements OnInit {
     this.limpiarMensajes();
 
     if (!this.nuevaVenta.monto || this.nuevaVenta.monto <= 0) {
-      this.error.set('ingresa un monto valido mayor a cero');
+      this.error.set('Ingresa un monto válido mayor a cero.');
       return;
     }
 
@@ -102,12 +102,12 @@ export class PortalVendedor implements OnInit {
       fecha: this.nuevaVenta.fecha
     }).subscribe({
       next: () => {
-        this.mensaje.set('venta registrada con exito');
+        this.mensaje.set('Venta registrada con éxito.');
         this.nuevaVenta.monto = 0;
         this.cargarDatos();
       },
       error: () => {
-        this.error.set('error al registrar la venta');
+        this.error.set('Error al registrar la venta.');
         this.loading.set(false);
       }
     });
@@ -131,4 +131,3 @@ export class PortalVendedor implements OnInit {
     this.authService.logout();
   }
 }
-

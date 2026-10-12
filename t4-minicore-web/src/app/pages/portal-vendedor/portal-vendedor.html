@@ -2,9 +2,9 @@
 <header class="top-bar" [class.mobile]="responsiveService.isMobile()">
   <div>
     <h1>Portal del Vendedor</h1>
-    <p class="user-greeting">conectado como: <span>{{ userName }}</span> (vendedor #{{ vendedorId }})</p>
+    <p class="user-greeting">Conectado como: <span>{{ userName }}</span> (Vendedor #{{ vendedorId }})</p>
   </div>
-  <button type="button" class="btn-logout" (click)="logout()">cerrar sesión</button>
+  <button type="button" class="btn-logout" (click)="logout()">Cerrar sesión</button>
 </header>
 
 <!-- avisos y notificaciones -->
@@ -19,24 +19,24 @@
   <!-- seccion 1: registrar nueva venta -->
   <section class="module-card">
     <h2>Registrar Nueva Venta</h2>
-    <p class="subtitle">ingresa el monto y la fecha de tu venta realizada</p>
+    <p class="subtitle">Ingresa el monto y la fecha de tu venta realizada.</p>
 
     <form class="sale-form" [class.mobile]="responsiveService.isMobile()" (ngSubmit)="registrarVenta()">
       <div class="form-group">
-        <label for="vMonto">monto de la venta ($)</label>
+        <label for="vMonto">Monto de la venta ($)</label>
         <input 
           id="vMonto" 
           type="number" 
           step="0.01" 
           min="0.01"
           name="vMonto" 
-          placeholder="ej. 1250.50" 
+          placeholder="Ej. 1250.50" 
           [(ngModel)]="nuevaVenta.monto" 
           required />
       </div>
 
       <div class="form-group">
-        <label for="vFecha">fecha de la venta</label>
+        <label for="vFecha">Fecha de la venta</label>
         <input 
           id="vFecha" 
           type="date" 
@@ -46,7 +46,7 @@
       </div>
 
       <button type="submit" [disabled]="loading()">
-        {{ loading() ? 'guardando...' : 'guardar venta' }}
+        {{ loading() ? 'Guardando...' : 'Guardar venta' }}
       </button>
     </form>
   </section>
@@ -54,12 +54,12 @@
   <!-- seccion 2: mis comisiones ganadas y resumen -->
   <section class="module-card">
     <h2>Mis Comisiones</h2>
-    <p class="subtitle">revisa tus ventas acumuladas y la comisión ganada en el periodo</p>
+    <p class="subtitle">Revisa tus ventas acumuladas y la comisión ganada en el periodo.</p>
 
     <!-- filtro de fechas -->
     <form class="filter-form" [class.mobile]="responsiveService.isMobile()" (ngSubmit)="cargarComision()">
       <div class="form-group">
-        <label for="fInicio">desde</label>
+        <label for="fInicio">Desde</label>
         <input 
           id="fInicio" 
           type="date" 
@@ -68,7 +68,7 @@
       </div>
 
       <div class="form-group">
-        <label for="fFin">hasta</label>
+        <label for="fFin">Hasta</label>
         <input 
           id="fFin" 
           type="date" 
@@ -77,15 +77,15 @@
       </div>
 
       <div class="filter-buttons">
-        <button type="submit">filtrar</button>
-        <button type="button" class="btn-secondary" (click)="limpiarFiltro()">limpiar</button>
+        <button type="submit">Filtrar</button>
+        <button type="button" class="btn-secondary" (click)="limpiarFiltro()">Limpiar</button>
       </div>
     </form>
 
     <!-- tarjetas con resumen de comisiones -->
     <div class="summary-cards" [class.mobile]="responsiveService.isMobile()">
       <div class="summary-card">
-        <span class="label">total vendido</span>
+        <span class="label">Total vendido</span>
         <span class="value">${{ (miComision()?.total_vendido || 0) | number:'1.2-2' }}</span>
       </div>
 
@@ -95,7 +95,7 @@
       </div>
 
       <div class="summary-card highlight">
-        <span class="label">comisión ganada</span>
+        <span class="label">Comisión ganada</span>
         <span class="value text-success">${{ (miComision()?.comision_calculada || 0) | number:'1.2-2' }}</span>
       </div>
     </div>
@@ -105,19 +105,19 @@
 <!-- seccion 3: tabla o tarjetas con historial de ventas -->
 <section class="module-card">
   <h2>Historial de Mis Ventas</h2>
-  <p class="subtitle">listado de todas las ventas que has registrado en la plataforma</p>
+  <p class="subtitle">Listado de todas las ventas que has registrado en la plataforma.</p>
 
   @if (misVentas().length === 0) {
-    <p class="empty-state">aun no has registrado ninguna venta.</p>
+    <p class="empty-state">Aún no has registrado ninguna venta.</p>
   } @else {
     @if (!responsiveService.isMobile()) {
       <div class="table-container">
         <table>
           <thead>
             <tr>
-              <th>id</th>
-              <th>fecha</th>
-              <th class="text-right">monto</th>
+              <th>ID</th>
+              <th>Fecha</th>
+              <th class="text-right">Monto</th>
             </tr>
           </thead>
           <tbody>
@@ -137,11 +137,11 @@
         @for (venta of misVentas(); track venta.id) {
           <article class="sale-card">
             <div class="sale-card-header">
-              <strong>venta #{{ venta.id }}</strong>
+              <strong>Venta #{{ venta.id }}</strong>
               <span class="badge">{{ venta.fecha | date:'yyyy-MM-dd' }}</span>
             </div>
-            <p><strong>hora:</strong> {{ venta.fecha | date:'HH:mm' }}</p>
-            <p class="font-bold text-success"><strong>monto:</strong> ${{ venta.monto | number:'1.2-2' }}</p>
+            <p><strong>Hora:</strong> {{ venta.fecha | date:'HH:mm' }}</p>
+            <p class="font-bold text-success"><strong>Monto:</strong> ${{ venta.monto | number:'1.2-2' }}</p>
           </article>
         }
       </div>

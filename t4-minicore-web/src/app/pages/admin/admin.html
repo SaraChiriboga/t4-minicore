@@ -2,9 +2,9 @@
 <header class="top-bar" [class.mobile]="responsiveService.isMobile()">
   <div>
     <h1>Panel de Administración</h1>
-    <p class="user-greeting">conectado como: <span>{{ userName }}</span> (administrador)</p>
+    <p class="user-greeting">Conectado como: <span>{{ userName }}</span> (Administrador)</p>
   </div>
-  <button type="button" class="btn-logout" (click)="logout()">cerrar sesión</button>
+  <button type="button" class="btn-logout" (click)="logout()">Cerrar sesión</button>
 </header>
 
 <!-- pestañas para alternar entre modulos -->
@@ -14,21 +14,21 @@
     class="tab-btn" 
     [class.active]="activeTab() === 'comisiones'"
     (click)="cambiarTab('comisiones')">
-    reporte de comisiones
+    Reporte de Comisiones
   </button>
   <button 
     type="button" 
     class="tab-btn" 
     [class.active]="activeTab() === 'vendedores'"
     (click)="cambiarTab('vendedores')">
-    gestión de vendedores
+    Gestión de Vendedores
   </button>
   <button 
     type="button" 
     class="tab-btn" 
     [class.active]="activeTab() === 'reglas'"
     (click)="cambiarTab('reglas')">
-    reglas de comisión
+    Reglas de Comisión
   </button>
 </nav>
 
@@ -44,12 +44,12 @@
 @if (activeTab() === 'comisiones') {
   <section class="module-card">
     <h2>Cálculo de Comisiones por Periodo</h2>
-    <p class="subtitle">filtra por rango de fechas para evaluar las comisiones de todos los vendedores</p>
+    <p class="subtitle">Filtra por rango de fechas para evaluar las comisiones de todos los vendedores.</p>
 
     <!-- formulario de fechas -->
     <form class="filter-form" [class.mobile]="responsiveService.isMobile()" (ngSubmit)="cargarReporte()">
       <div class="form-group">
-        <label for="fechaInicio">fecha inicio</label>
+        <label for="fechaInicio">Fecha inicio</label>
         <input 
           id="fechaInicio" 
           type="date" 
@@ -58,7 +58,7 @@
       </div>
 
       <div class="form-group">
-        <label for="fechaFin">fecha fin</label>
+        <label for="fechaFin">Fecha fin</label>
         <input 
           id="fechaFin" 
           type="date" 
@@ -68,38 +68,38 @@
 
       <div class="filter-buttons">
         <button type="submit" [disabled]="loading()">
-          {{ loading() ? 'calculando...' : 'filtrar y calcular' }}
+          {{ loading() ? 'Calculando...' : 'Filtrar y calcular' }}
         </button>
-        <button type="button" class="btn-secondary" (click)="limpiarFiltroFechas()">limpiar</button>
+        <button type="button" class="btn-secondary" (click)="limpiarFiltroFechas()">Limpiar</button>
       </div>
     </form>
 
     <!-- tarjetas con resumen numerico -->
     <div class="summary-cards" [class.mobile]="responsiveService.isMobile()">
       <div class="summary-card">
-        <span class="label">total vendido en el periodo</span>
+        <span class="label">Total vendido en el periodo</span>
         <span class="value">${{ totalVentas() | number:'1.2-2' }}</span>
       </div>
       <div class="summary-card highlight">
-        <span class="label">total comisiones generadas</span>
+        <span class="label">Total comisiones generadas</span>
         <span class="value">${{ totalComisiones() | number:'1.2-2' }}</span>
       </div>
     </div>
 
     <!-- tabla o vista movil de resultados -->
     @if (comisiones().length === 0) {
-      <p class="empty-state">no se encontraron ventas en el periodo seleccionado.</p>
+      <p class="empty-state">No se encontraron ventas en el periodo seleccionado.</p>
     } @else {
       @if (!responsiveService.isMobile()) {
         <div class="table-container">
           <table>
             <thead>
               <tr>
-                <th>vendedor</th>
-                <th>identificación</th>
-                <th class="text-right">total vendido</th>
-                <th class="text-center">% comisión</th>
-                <th class="text-right">comisión calculada</th>
+                <th>Vendedor</th>
+                <th>Identificación</th>
+                <th class="text-right">Total Vendido</th>
+                <th class="text-center">% Comisión</th>
+                <th class="text-right">Comisión Calculada</th>
               </tr>
             </thead>
             <tbody>
@@ -134,9 +134,9 @@
                 <strong>{{ c.nombre }}</strong>
                 <span class="badge">{{ c.porcentaje_comision }}%</span>
               </div>
-              <p><strong>identificación:</strong> {{ c.identificacion || '-' }}</p>
-              <p><strong>total vendido:</strong> ${{ c.total_vendido | number:'1.2-2' }}</p>
-              <p class="text-success font-bold"><strong>comisión ganada:</strong> ${{ c.comision_calculada | number:'1.2-2' }}</p>
+              <p><strong>Identificación:</strong> {{ c.identificacion || '-' }}</p>
+              <p><strong>Total vendido:</strong> ${{ c.total_vendido | number:'1.2-2' }}</p>
+              <p class="text-success font-bold"><strong>Comisión ganada:</strong> ${{ c.comision_calculada | number:'1.2-2' }}</p>
             </article>
           }
         </div>
@@ -151,46 +151,46 @@
     <h2>{{ vendedorEditandoId ? 'Editar Vendedor' : 'Registrar Nuevo Vendedor' }}</h2>
     <form class="crud-form" [class.mobile]="responsiveService.isMobile()" (ngSubmit)="guardarVendedor()">
       <div class="form-group">
-        <label for="vNombre">nombre completo</label>
+        <label for="vNombre">Nombre completo</label>
         <input 
           id="vNombre" 
           type="text" 
           name="vNombre" 
-          placeholder="ej. Carlos Mendoza" 
+          placeholder="Ej. Carlos Mendoza" 
           [(ngModel)]="nuevoVendedor.nombre" />
       </div>
 
       <div class="form-group">
-        <label for="vIden">número de identificación / cédula</label>
+        <label for="vIden">Número de identificación / cédula</label>
         <input 
           id="vIden" 
           type="text" 
           name="vIden" 
-          placeholder="ej. 1712345678" 
+          placeholder="Ej. 1712345678" 
           [(ngModel)]="nuevoVendedor.identificacion" />
       </div>
 
       <div class="form-actions">
-        <button type="submit">{{ vendedorEditandoId ? 'guardar cambios' : 'crear vendedor' }}</button>
+        <button type="submit">{{ vendedorEditandoId ? 'Guardar cambios' : 'Crear vendedor' }}</button>
         @if (vendedorEditandoId) {
-          <button type="button" class="btn-secondary" (click)="cancelarEdicionVendedor()">cancelar</button>
+          <button type="button" class="btn-secondary" (click)="cancelarEdicionVendedor()">Cancelar</button>
         }
       </div>
     </form>
 
     <h3 class="section-title">Listado de Vendedores</h3>
     @if (vendedores().length === 0) {
-      <p class="empty-state">no hay vendedores registrados.</p>
+      <p class="empty-state">No hay vendedores registrados.</p>
     } @else {
       @if (!responsiveService.isMobile()) {
         <div class="table-container">
           <table>
             <thead>
               <tr>
-                <th>id</th>
-                <th>nombre</th>
-                <th>identificación</th>
-                <th class="text-right">acciones</th>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Identificación</th>
+                <th class="text-right">Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -200,8 +200,8 @@
                   <td class="font-bold">{{ v.nombre }}</td>
                   <td>{{ v.identificacion }}</td>
                   <td class="text-right action-buttons">
-                    <button type="button" class="btn-sm btn-edit" (click)="editarVendedor(v)">editar</button>
-                    <button type="button" class="btn-sm btn-delete" (click)="eliminarVendedor(v.id)">eliminar</button>
+                    <button type="button" class="btn-sm btn-edit" (click)="editarVendedor(v)">Editar</button>
+                    <button type="button" class="btn-sm btn-delete" (click)="eliminarVendedor(v.id)">Eliminar</button>
                   </td>
                 </tr>
               }
@@ -217,10 +217,10 @@
                 <strong>{{ v.nombre }}</strong>
                 <span class="badge">#{{ v.id }}</span>
               </div>
-              <p><strong>identificación:</strong> {{ v.identificacion }}</p>
+              <p><strong>Identificación:</strong> {{ v.identificacion }}</p>
               <div class="card-actions">
-                <button type="button" class="btn-sm btn-edit" (click)="editarVendedor(v)">editar</button>
-                <button type="button" class="btn-sm btn-delete" (click)="eliminarVendedor(v.id)">eliminar</button>
+                <button type="button" class="btn-sm btn-edit" (click)="editarVendedor(v)">Editar</button>
+                <button type="button" class="btn-sm btn-delete" (click)="eliminarVendedor(v.id)">Eliminar</button>
               </div>
             </article>
           }
@@ -236,48 +236,48 @@
     <h2>{{ reglaEditandoId ? 'Editar Regla de Comisión' : 'Nueva Regla Escalonada' }}</h2>
     <form class="crud-form" [class.mobile]="responsiveService.isMobile()" (ngSubmit)="guardarRegla()">
       <div class="form-group">
-        <label for="rMonto">monto mínimo ($)</label>
+        <label for="rMonto">Monto mínimo ($)</label>
         <input 
           id="rMonto" 
           type="number" 
           step="0.01" 
           name="rMonto" 
-          placeholder="ej. 5000" 
+          placeholder="Ej. 5000" 
           [(ngModel)]="nuevaRegla.monto_minimo" />
       </div>
 
       <div class="form-group">
-        <label for="rPct">porcentaje de comisión (%)</label>
+        <label for="rPct">Porcentaje de comisión (%)</label>
         <input 
           id="rPct" 
           type="number" 
           step="0.1" 
           name="rPct" 
-          placeholder="ej. 7.5" 
+          placeholder="Ej. 7.5" 
           [(ngModel)]="nuevaRegla.porcentaje_comision" />
       </div>
 
       <div class="form-actions">
-        <button type="submit">{{ reglaEditandoId ? 'guardar cambios' : 'crear regla' }}</button>
+        <button type="submit">{{ reglaEditandoId ? 'Guardar cambios' : 'Crear regla' }}</button>
         @if (reglaEditandoId) {
-          <button type="button" class="btn-secondary" (click)="cancelarEdicionRegla()">cancelar</button>
+          <button type="button" class="btn-secondary" (click)="cancelarEdicionRegla()">Cancelar</button>
         }
       </div>
     </form>
 
     <h3 class="section-title">Escalones de Comisión Configurados</h3>
     @if (reglas().length === 0) {
-      <p class="empty-state">no hay reglas de comision configuradas.</p>
+      <p class="empty-state">No hay reglas de comisión configuradas.</p>
     } @else {
       @if (!responsiveService.isMobile()) {
         <div class="table-container">
           <table>
             <thead>
               <tr>
-                <th>id</th>
-                <th>monto mínimo</th>
-                <th>porcentaje aplicado</th>
-                <th class="text-right">acciones</th>
+                <th>ID</th>
+                <th>Monto Mínimo</th>
+                <th>Porcentaje Aplicado</th>
+                <th class="text-right">Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -287,8 +287,8 @@
                   <td class="font-bold">${{ r.monto_minimo | number:'1.2-2' }}</td>
                   <td><span class="badge">{{ r.porcentaje_comision }}%</span></td>
                   <td class="text-right action-buttons">
-                    <button type="button" class="btn-sm btn-edit" (click)="editarRegla(r)">editar</button>
-                    <button type="button" class="btn-sm btn-delete" (click)="eliminarRegla(r.id)">eliminar</button>
+                    <button type="button" class="btn-sm btn-edit" (click)="editarRegla(r)">Editar</button>
+                    <button type="button" class="btn-sm btn-delete" (click)="eliminarRegla(r.id)">Eliminar</button>
                   </td>
                 </tr>
               }
@@ -301,13 +301,13 @@
           @for (r of reglas(); track r.id) {
             <article class="item-card">
               <div class="item-card-header">
-                <strong>regla #{{ r.id }}</strong>
+                <strong>Regla #{{ r.id }}</strong>
                 <span class="badge">{{ r.porcentaje_comision }}%</span>
               </div>
-              <p><strong>monto mínimo:</strong> ${{ r.monto_minimo | number:'1.2-2' }}</p>
+              <p><strong>Monto mínimo:</strong> ${{ r.monto_minimo | number:'1.2-2' }}</p>
               <div class="card-actions">
-                <button type="button" class="btn-sm btn-edit" (click)="editarRegla(r)">editar</button>
-                <button type="button" class="btn-sm btn-delete" (click)="eliminarRegla(r.id)">eliminar</button>
+                <button type="button" class="btn-sm btn-edit" (click)="editarRegla(r)">Editar</button>
+                <button type="button" class="btn-sm btn-delete" (click)="eliminarRegla(r.id)">Eliminar</button>
               </div>
             </article>
           }

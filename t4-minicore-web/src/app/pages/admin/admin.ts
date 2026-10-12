@@ -70,7 +70,7 @@ export class Admin implements OnInit {
         this.loading.set(false);
       },
       error: () => {
-        this.error.set('no se pudo cargar el reporte de comisiones');
+        this.error.set('No se pudo cargar el reporte de comisiones.');
         this.loading.set(false);
       }
     });
@@ -97,36 +97,36 @@ export class Admin implements OnInit {
   cargarVendedores() {
     this.vendedorService.getVendedores().subscribe({
       next: (data) => this.vendedores.set(data),
-      error: () => this.error.set('error al cargar la lista de vendedores')
+      error: () => this.error.set('Error al cargar la lista de vendedores.')
     });
   }
 
   // guarda o actualiza un vendedor
   guardarVendedor() {
     if (!this.nuevoVendedor.nombre || !this.nuevoVendedor.identificacion) {
-      this.error.set('por favor completa el nombre y la identificacion');
+      this.error.set('Por favor completa el nombre y la identificación.');
       return;
     }
 
     if (this.vendedorEditandoId) {
       this.vendedorService.updateVendedor(this.vendedorEditandoId, this.nuevoVendedor).subscribe({
         next: () => {
-          this.mensaje.set('vendedor actualizado correctamente');
+          this.mensaje.set('Vendedor actualizado correctamente.');
           this.cancelarEdicionVendedor();
           this.cargarVendedores();
           this.cargarReporte();
         },
-        error: () => this.error.set('error al actualizar el vendedor')
+        error: () => this.error.set('Error al actualizar el vendedor.')
       });
     } else {
       this.vendedorService.createVendedor(this.nuevoVendedor).subscribe({
         next: () => {
-          this.mensaje.set('vendedor creado con exito');
+          this.mensaje.set('Vendedor creado con éxito.');
           this.nuevoVendedor = { nombre: '', identificacion: '' };
           this.cargarVendedores();
           this.cargarReporte();
         },
-        error: () => this.error.set('error al crear el vendedor')
+        error: () => this.error.set('Error al crear el vendedor.')
       });
     }
   }
@@ -145,14 +145,14 @@ export class Admin implements OnInit {
 
   // elimina un vendedor
   eliminarVendedor(id: number | undefined) {
-    if (!id || !confirm('¿seguro que deseas eliminar este vendedor?')) return;
+    if (!id || !confirm('¿Seguro que deseas eliminar este vendedor?')) return;
     this.vendedorService.deleteVendedor(id).subscribe({
       next: () => {
-        this.mensaje.set('vendedor eliminado correctamente');
+        this.mensaje.set('Vendedor eliminado correctamente.');
         this.cargarVendedores();
         this.cargarReporte();
       },
-      error: () => this.error.set('no se pudo eliminar el vendedor')
+      error: () => this.error.set('No se pudo eliminar el vendedor.')
     });
   }
 
@@ -160,7 +160,7 @@ export class Admin implements OnInit {
   cargarReglas() {
     this.reglaService.getReglas().subscribe({
       next: (data) => this.reglas.set(data),
-      error: () => this.error.set('error al cargar las reglas')
+      error: () => this.error.set('Error al cargar las reglas.')
     });
   }
 
@@ -169,22 +169,22 @@ export class Admin implements OnInit {
     if (this.reglaEditandoId) {
       this.reglaService.updateRegla(this.reglaEditandoId, this.nuevaRegla).subscribe({
         next: () => {
-          this.mensaje.set('regla actualizada correctamente');
+          this.mensaje.set('Regla actualizada correctamente.');
           this.cancelarEdicionRegla();
           this.cargarReglas();
           this.cargarReporte();
         },
-        error: () => this.error.set('error al actualizar la regla')
+        error: () => this.error.set('Error al actualizar la regla.')
       });
     } else {
       this.reglaService.createRegla(this.nuevaRegla).subscribe({
         next: () => {
-          this.mensaje.set('regla creada con exito');
+          this.mensaje.set('Regla creada con éxito.');
           this.nuevaRegla = { monto_minimo: 0, porcentaje_comision: 0 };
           this.cargarReglas();
           this.cargarReporte();
         },
-        error: () => this.error.set('error al crear la regla')
+        error: () => this.error.set('Error al crear la regla.')
       });
     }
   }
@@ -203,14 +203,14 @@ export class Admin implements OnInit {
 
   // elimina una regla
   eliminarRegla(id: number | undefined) {
-    if (!id || !confirm('¿seguro que deseas eliminar esta regla?')) return;
+    if (!id || !confirm('¿Seguro que deseas eliminar esta regla?')) return;
     this.reglaService.deleteRegla(id).subscribe({
       next: () => {
-        this.mensaje.set('regla eliminada correctamente');
+        this.mensaje.set('Regla eliminada correctamente.');
         this.cargarReglas();
         this.cargarReporte();
       },
-      error: () => this.error.set('no se pudo eliminar la regla')
+      error: () => this.error.set('No se pudo eliminar la regla.')
     });
   }
 
@@ -225,4 +225,3 @@ export class Admin implements OnInit {
     this.authService.logout();
   }
 }
-

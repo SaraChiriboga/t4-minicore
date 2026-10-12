@@ -35,7 +35,7 @@ export class Login implements OnInit {
 
     const cleanEmail = this.email.trim();
     if (!cleanEmail || !this.password) {
-      this.errorMessage.set('ingresa tu correo y contraseña');
+      this.errorMessage.set('Por favor ingresa tu correo y contraseña.');
       return;
     }
 
@@ -49,7 +49,7 @@ export class Login implements OnInit {
         }
       },
       error: (err) => {
-        this.errorMessage.set('credenciales incorrectas o servidor no disponible');
+        this.errorMessage.set('Credenciales incorrectas o servidor no disponible.');
         console.error(err);
       }
     });
