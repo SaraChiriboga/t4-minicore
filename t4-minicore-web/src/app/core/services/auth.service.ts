@@ -2,6 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 // respuesta que manda el backend al iniciar sesion
 interface LoginResponse {
@@ -24,7 +25,7 @@ export class AuthService {
   private router = inject(Router);
 
   // ruta base del api de lucky y clave para el token
-  private apiUrl = 'http://localhost:3000/api';
+  private apiUrl = environment.apiUrl;
   private tokenKey = 'jwt_token';
 
   authErrorMessage = signal('');

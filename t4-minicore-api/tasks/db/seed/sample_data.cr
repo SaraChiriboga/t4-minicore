@@ -4,36 +4,43 @@ class Db::Seed::SampleData < LuckyTask::Task
   summary "Add sample database records helpful for development"
 
   def call
-    SaveRegla.create!(monto_minimo: 1000.0, porcentaje_comision: 5.0)
-    SaveRegla.create!(monto_minimo: 5000.0, porcentaje_comision: 10.0)
+    if ReglaQuery.new.monto_minimo(1000.0).none?
+      SaveRegla.create!(monto_minimo: 1000.0, porcentaje_comision: 5.0)
+    end
 
-    vendedor_1 = SaveVendedor.create!(
+    if ReglaQuery.new.monto_minimo(5000.0).none?
+      SaveRegla.create!(monto_minimo: 5000.0, porcentaje_comision: 10.0)
+    end
+
+    vendedor_1 = VendedorQuery.new.identificacion("1712345678").first? || SaveVendedor.create!(
       nombre: "Sara Chiriboga",
       identificacion: "1712345678"
     )
 
-    vendedor_2 = SaveVendedor.create!(
+    vendedor_2 = VendedorQuery.new.identificacion("0912345678").first? || SaveVendedor.create!(
       nombre: "Connie Terán",
       identificacion: "0912345678"
     )
 
-    SaveVenta.create!(
-      monto: 1500.50,
-      fecha: Time.utc,
-      vendedor_id: vendedor_1.id
-    )
+    if VentaQuery.new.none?
+      SaveVenta.create!(
+        monto: 1500.50,
+        fecha: Time.utc,
+        vendedor_id: vendedor_1.id
+      )
 
-    SaveVenta.create!(
-      monto: 6200.00,
-      fecha: Time.utc - 2.days,
-      vendedor_id: vendedor_1.id
-    )
+      SaveVenta.create!(
+        monto: 6200.00,
+        fecha: Time.utc - 2.days,
+        vendedor_id: vendedor_1.id
+      )
 
-    SaveVenta.create!(
-      monto: 450.00,
-      fecha: Time.utc,
-      vendedor_id: vendedor_2.id
-    )
+      SaveVenta.create!(
+        monto: 450.00,
+        fecha: Time.utc,
+        vendedor_id: vendedor_2.id
+      )
+    end
 
     if UserQuery.new.email("admin@t4-minicore.com").none?
       SignUpUser.create!(

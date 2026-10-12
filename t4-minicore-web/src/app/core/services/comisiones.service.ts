@@ -3,13 +3,14 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Venta } from '../../shared/models/venta.model';
 import { Comision } from '../../shared/models/comision.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ComisionesService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:3000/api/ventas';
+  private apiUrl = `${environment.apiUrl}/ventas`;
 
   // obtiene el listado de ventas (con filtros opcionales de vendedor y fechas)
   getVentas(vendedorId?: number, fechaInicio?: string, fechaFin?: string): Observable<Venta[]> {

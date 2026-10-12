@@ -2,13 +2,14 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Regla } from '../../shared/models/regla.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReglaService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:3000/api/regla';
+  private apiUrl = `${environment.apiUrl}/regla`;
 
   // lista todas las reglas de comision
   getReglas(): Observable<Regla[]> {

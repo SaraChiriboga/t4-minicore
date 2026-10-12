@@ -7,6 +7,7 @@
 ![JWT Authentication](https://img.shields.io/badge/Security-JWT%20%2B%20Bcrypt-059669?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
 ![Responsive Design](https://img.shields.io/badge/UI-Responsive%20CDK-0d9488?style=for-the-badge&logo=googlechrome&logoColor=white)
 ![RBAC Protected](https://img.shields.io/badge/Access-RBAC%20Enforced-7c3aed?style=for-the-badge&logo=auth0&logoColor=white)
+![Render](https://img.shields.io/badge/Deploy-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)
 
 **Plataforma web empresarial para el registro transaccional de ventas y liquidación escalonada de comisiones comerciales.**  
 Construida bajo el patrón arquitectónico **Modelo-Vista-Controlador (MVC)** desacoplado con **Control de Acceso Basado en Roles (RBAC)**.
@@ -22,9 +23,10 @@ Construida bajo el patrón arquitectónico **Modelo-Vista-Controlador (MVC)** de
 5. [📱 Diseño Adaptativo (Responsive Service)](#-diseño-adaptativo-responsive-service)
 6. [🛠️ Tecnologías Utilizadas (Tech Stack)](#️-tecnologías-utilizadas-tech-stack)
 7. [📁 Estructura del Repositorio](#-estructura-del-repositorio)
-8. [🚀 Instalación y Puesta en Marcha](#-instalación-y-puesta-en-marcha)
-9. [🌐 Matriz de Endpoints REST API](#-matriz-de-endpoints-rest-api)
-10. [👩‍💻 Autora y Contacto](#-autora-y-contacto)
+8. [🚀 Instalación y Puesta en Marcha Local](#-instalación-y-puesta-en-marcha-local)
+9. [☁️ Despliegue en la Nube con Render (Full-Stack)](#️-despliegue-en-la-nube-con-render-full-stack)
+10. [🌐 Matriz de Endpoints REST API](#-matriz-de-endpoints-rest-api)
+11. [👩‍💻 Autora y Contacto](#-autora-y-contacto)
 
 ---
 
@@ -219,7 +221,7 @@ t4-minicore/
 
 ---
 
-## 🚀 Instalación y Puesta en Marcha
+## 🚀 Instalación y Puesta en Marcha Local
 
 ### Prerrequisitos
 - **Crystal** `>= 1.10.0` y **Lucky CLI**
@@ -289,6 +291,69 @@ cd t4-minicore
    ```
    http://localhost:4200
    ```
+
+---
+
+## ☁️ Despliegue en la Nube con Render (Full-Stack)
+
+El repositorio incluye soporte nativo para **[Render](https://render.com/)** mediante contenedores Docker para el backend y hosting estático para el frontend.
+
+### 🌟 Opción 1: Despliegue Automático mediante Blueprint (Recomendada)
+
+1. Sube los cambios más recientes a tu repositorio de GitHub:
+   ```bash
+   git push origin main
+   ```
+2. Inicia sesión en **[dashboard.render.com](https://dashboard.render.com/)**.
+3. Haz clic en **New +** y selecciona **Blueprint**.
+4. Conecta tu repositorio `t4-minicore`.
+5. Render detectará automáticamente el archivo [`render.yaml`](render.yaml) y provisionará:
+   - 🗄️ **Base de datos PostgreSQL:** `t4-minicore-db`
+   - ⚙️ **Web Service (API en Docker):** `t4-minicore-api` (ejecuta migraciones y semillas automáticamente al arrancar)
+   - 🌐 **Static Site (Angular):** `t4-minicore-web` (con redirección SPA `/index.html`)
+6. Haz clic en **Apply** para iniciar el despliegue de toda la infraestructura.
+
+---
+
+### 🛠️ Opción 2: Despliegue Manual Paso a Paso
+
+Si prefieres crear los servicios manualmente en la interfaz de Render:
+
+#### 1. Crear la Base de Datos PostgreSQL
+* Ve a **New +** > **PostgreSQL**.
+* **Name:** `t4-minicore-db`
+* **Database:** `t4_minicore_api_production`
+* **User:** `lucky`
+* **Plan:** Free
+* Guarda el servicio y copia el **Internal Database URL** generado.
+
+#### 2. Desplegar el Backend (`t4-minicore-api`)
+* Ve a **New +** > **Web Service**.
+* Conecta tu repositorio `t4-minicore`.
+* **Root Directory:** `t4-minicore-api`
+* **Runtime:** `Docker`
+* **Dockerfile Path:** `Dockerfile`
+* **Instance Type:** Free
+* En la sección **Environment Variables**, añade:
+  * `LUCKY_ENV`: `production`
+  * `PORT`: `3000`
+  * `DATABASE_URL`: Pega el *Internal Database URL* de tu base de datos de Render.
+  * `SECRET_KEY_BASE`: Genera un valor seguro (ej. con `lucky gen.secret_key` o cadena alfanumérica de 32+ caracteres).
+* Haz clic en **Create Web Service**. El contenedor compilará, correrá las migraciones y sembrará los usuarios y reglas iniciales.
+* Copia la URL pública generada (ej. `https://t4-minicore-api.onrender.com`).
+
+#### 3. Desplegar el Frontend (`t4-minicore-web`)
+* Ve a **New +** > **Static Site**.
+* Conecta tu repositorio `t4-minicore`.
+* **Root Directory:** `t4-minicore-web`
+* **Build Command:** `npm install && npm run build`
+* **Publish Directory:** `dist/t4-minicore-web/browser`
+* En **Redirects/Rewrites**:
+  * **Type:** `Rewrite`
+  * **Source:** `/*`
+  * **Destination:** `/index.html`
+* En `src/environments/environment.prod.ts`, coloca la URL pública asignada a tu backend API en Render.
+* Haz clic en **Create Static Site**.
 
 ---
 
