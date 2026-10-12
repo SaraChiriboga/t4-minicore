@@ -114,6 +114,7 @@ export class Admin implements OnInit {
           this.mensaje.set('vendedor actualizado correctamente');
           this.cancelarEdicionVendedor();
           this.cargarVendedores();
+          this.cargarReporte();
         },
         error: () => this.error.set('error al actualizar el vendedor')
       });
@@ -123,6 +124,7 @@ export class Admin implements OnInit {
           this.mensaje.set('vendedor creado con exito');
           this.nuevoVendedor = { nombre: '', identificacion: '' };
           this.cargarVendedores();
+          this.cargarReporte();
         },
         error: () => this.error.set('error al crear el vendedor')
       });
@@ -146,8 +148,9 @@ export class Admin implements OnInit {
     if (!id || !confirm('¿seguro que deseas eliminar este vendedor?')) return;
     this.vendedorService.deleteVendedor(id).subscribe({
       next: () => {
-        this.mensaje.set('vendedor eliminado');
+        this.mensaje.set('vendedor eliminado correctamente');
         this.cargarVendedores();
+        this.cargarReporte();
       },
       error: () => this.error.set('no se pudo eliminar el vendedor')
     });
@@ -169,6 +172,7 @@ export class Admin implements OnInit {
           this.mensaje.set('regla actualizada correctamente');
           this.cancelarEdicionRegla();
           this.cargarReglas();
+          this.cargarReporte();
         },
         error: () => this.error.set('error al actualizar la regla')
       });
@@ -178,6 +182,7 @@ export class Admin implements OnInit {
           this.mensaje.set('regla creada con exito');
           this.nuevaRegla = { monto_minimo: 0, porcentaje_comision: 0 };
           this.cargarReglas();
+          this.cargarReporte();
         },
         error: () => this.error.set('error al crear la regla')
       });
@@ -201,8 +206,9 @@ export class Admin implements OnInit {
     if (!id || !confirm('¿seguro que deseas eliminar esta regla?')) return;
     this.reglaService.deleteRegla(id).subscribe({
       next: () => {
-        this.mensaje.set('regla eliminada');
+        this.mensaje.set('regla eliminada correctamente');
         this.cargarReglas();
+        this.cargarReporte();
       },
       error: () => this.error.set('no se pudo eliminar la regla')
     });

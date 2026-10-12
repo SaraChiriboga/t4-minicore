@@ -3,7 +3,7 @@ class Api::Ventas::Create < ApiAction
 
   post "/api/ventas" do
     if current_user.role.regular?
-      vid = current_user.vendedor_id.not_nil!
+      vid = current_user_vendedor_id
       SaveVenta.create(params, vendedor_id: vid) do |operation, venta|
         if venta
           json VentaSerializer.new(venta), status: 201

@@ -8,7 +8,8 @@ class Api::Ventas::Index < ApiAction
     base_query = VentaQuery.new.preload_vendedor
 
     if current_user.role.regular?
-      base_query = base_query.vendedor_id(current_user.vendedor_id.not_nil!)
+      vid = current_user_vendedor_id
+      base_query = base_query.vendedor_id(vid)
     elsif param_vendedor_id = params.get?("vendedor_id")
       if vid = param_vendedor_id.to_i64?
         base_query = base_query.vendedor_id(vid)

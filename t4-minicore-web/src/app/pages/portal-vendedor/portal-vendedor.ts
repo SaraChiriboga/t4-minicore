@@ -21,7 +21,9 @@ export class PortalVendedor implements OnInit {
 
   // datos del usuario logueado
   userName = this.authService.getUserName();
-  vendedorId = this.authService.getVendedorId();
+  get vendedorId(): number | null {
+    return this.authService.getVendedorId();
+  }
 
   // estados reactivos
   loading = signal(false);

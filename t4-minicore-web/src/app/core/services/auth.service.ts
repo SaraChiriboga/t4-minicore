@@ -59,9 +59,9 @@ export class AuthService {
     return localStorage.getItem('user_role') === 'Admin';
   }
 
-  // valida si el usuario es vendedor asignado
+  // valida si el usuario es vendedor asignado o regular
   isVendedor(): boolean {
-    return localStorage.getItem('user_role') === 'Regular' && !!localStorage.getItem('vendedor_id');
+    return localStorage.getItem('user_role') === 'Regular';
   }
 
   // obtiene el id del vendedor en sesion
