@@ -30,10 +30,19 @@ export class PortalVendedor implements OnInit {
   mensaje = signal('');
   error = signal('');
 
+  // obtiene la fecha actual en formato local YYYY-MM-DD
+  private getLocalDateString(): string {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
   // formulario para registrar nueva venta
   nuevaVenta = {
     monto: 0,
-    fecha: new Date().toISOString().split('T')[0]
+    fecha: this.getLocalDateString()
   };
 
   // filtro de fechas para ver comisiones
@@ -55,10 +64,10 @@ export class PortalVendedor implements OnInit {
     this.cargarComision();
   }
 
-  // consulta las ventas registradas por este vendedor
+  // consulta las ventas registradas por este vendedor con filtros aplicados
   cargarVentas() {
     this.loading.set(true);
-    this.comisionesService.getVentas().subscribe({
+    this.comisionesService.getVentas(undefined, this.fechaInicio, this.fechaFin).subscribe({
       next: (ventas) => {
         this.misVentas.set(ventas);
         this.loading.set(false);
@@ -87,6 +96,11 @@ export class PortalVendedor implements OnInit {
     });
   }
 
+  // aplica el filtro de fechas tanto en comisiones como en historial
+  filtrar() {
+    this.cargarDatos();
+  }
+
   // envia la venta nueva a la base de datos
   registrarVenta() {
     this.limpiarMensajes();
@@ -104,6 +118,7 @@ export class PortalVendedor implements OnInit {
       next: () => {
         this.mensaje.set('Venta registrada con éxito.');
         this.nuevaVenta.monto = 0;
+        this.nuevaVenta.fecha = this.getLocalDateString();
         this.cargarDatos();
       },
       error: () => {
@@ -117,7 +132,7 @@ export class PortalVendedor implements OnInit {
   limpiarFiltro() {
     this.fechaInicio = '';
     this.fechaFin = '';
-    this.cargarComision();
+    this.cargarDatos();
   }
 
   // limpia los mensajes de aviso

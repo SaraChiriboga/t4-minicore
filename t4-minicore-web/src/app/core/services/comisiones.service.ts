@@ -11,11 +11,17 @@ export class ComisionesService {
   private http = inject(HttpClient);
   private apiUrl = 'http://localhost:3000/api/ventas';
 
-  // obtiene el listado de ventas (opcionalmente filtrado por vendedor)
-  getVentas(vendedorId?: number): Observable<Venta[]> {
+  // obtiene el listado de ventas (con filtros opcionales de vendedor y fechas)
+  getVentas(vendedorId?: number, fechaInicio?: string, fechaFin?: string): Observable<Venta[]> {
     let params = new HttpParams();
     if (vendedorId) {
       params = params.set('vendedor_id', vendedorId.toString());
+    }
+    if (fechaInicio) {
+      params = params.set('fecha_inicio', fechaInicio);
+    }
+    if (fechaFin) {
+      params = params.set('fecha_fin', fechaFin);
     }
     return this.http.get<Venta[]>(this.apiUrl, { params });
   }
@@ -40,4 +46,3 @@ export class ComisionesService {
     return this.http.get<Comision[]>(this.apiUrl, { params });
   }
 }
-

@@ -1,7 +1,7 @@
 <div>
     <section class="top-bar" [class.mobile]="responsiveService.isMobile()">
         <h1>Gestión de Usuarios</h1>
-        <button (click)="logout()">Cerrar sesión</button>
+        <button (click)="logout()">Cerrar Sesión</button>
     </section>
     <section class="fields-container" [class.mobile]="responsiveService.isMobile()" >
         <h2>{{updatingUserId() ? 'Editar Usuario' : 'Crear Nuevo Usuario'}}</h2>

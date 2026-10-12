@@ -4,7 +4,7 @@
     <h1>Panel de Administración</h1>
     <p class="user-greeting">Conectado como: <span>{{ userName }}</span> (Administrador)</p>
   </div>
-  <button type="button" class="btn-logout" (click)="logout()">Cerrar sesión</button>
+  <button type="button" class="btn-logout" (click)="logout()">Cerrar Sesión</button>
 </header>
 
 <!-- pestañas para alternar entre modulos -->
@@ -49,7 +49,7 @@
     <!-- formulario de fechas -->
     <form class="filter-form" [class.mobile]="responsiveService.isMobile()" (ngSubmit)="cargarReporte()">
       <div class="form-group">
-        <label for="fechaInicio">Fecha inicio</label>
+        <label for="fechaInicio">Fecha de Inicio</label>
         <input 
           id="fechaInicio" 
           type="date" 
@@ -58,7 +58,7 @@
       </div>
 
       <div class="form-group">
-        <label for="fechaFin">Fecha fin</label>
+        <label for="fechaFin">Fecha de Fin</label>
         <input 
           id="fechaFin" 
           type="date" 
@@ -68,7 +68,7 @@
 
       <div class="filter-buttons">
         <button type="submit" [disabled]="loading()">
-          {{ loading() ? 'Calculando...' : 'Filtrar y calcular' }}
+          {{ loading() ? 'Calculando...' : 'Filtrar y Calcular' }}
         </button>
         <button type="button" class="btn-secondary" (click)="limpiarFiltroFechas()">Limpiar</button>
       </div>
@@ -77,11 +77,11 @@
     <!-- tarjetas con resumen numerico -->
     <div class="summary-cards" [class.mobile]="responsiveService.isMobile()">
       <div class="summary-card">
-        <span class="label">Total vendido en el periodo</span>
+        <span class="label">Total Vendido en el Periodo</span>
         <span class="value">${{ totalVentas() | number:'1.2-2' }}</span>
       </div>
       <div class="summary-card highlight">
-        <span class="label">Total comisiones generadas</span>
+        <span class="label">Total Comisiones Generadas</span>
         <span class="value">${{ totalComisiones() | number:'1.2-2' }}</span>
       </div>
     </div>
@@ -135,8 +135,8 @@
                 <span class="badge">{{ c.porcentaje_comision }}%</span>
               </div>
               <p><strong>Identificación:</strong> {{ c.identificacion || '-' }}</p>
-              <p><strong>Total vendido:</strong> ${{ c.total_vendido | number:'1.2-2' }}</p>
-              <p class="text-success font-bold"><strong>Comisión ganada:</strong> ${{ c.comision_calculada | number:'1.2-2' }}</p>
+              <p><strong>Total Vendido:</strong> ${{ c.total_vendido | number:'1.2-2' }}</p>
+              <p class="text-success font-bold"><strong>Comisión Ganada:</strong> ${{ c.comision_calculada | number:'1.2-2' }}</p>
             </article>
           }
         </div>
@@ -151,7 +151,7 @@
     <h2>{{ vendedorEditandoId ? 'Editar Vendedor' : 'Registrar Nuevo Vendedor' }}</h2>
     <form class="crud-form" [class.mobile]="responsiveService.isMobile()" (ngSubmit)="guardarVendedor()">
       <div class="form-group">
-        <label for="vNombre">Nombre completo</label>
+        <label for="vNombre">Nombre Completo</label>
         <input 
           id="vNombre" 
           type="text" 
@@ -161,7 +161,7 @@
       </div>
 
       <div class="form-group">
-        <label for="vIden">Número de identificación / cédula</label>
+        <label for="vIden">Número de Identificación / Cédula</label>
         <input 
           id="vIden" 
           type="text" 
@@ -171,7 +171,7 @@
       </div>
 
       <div class="form-actions">
-        <button type="submit">{{ vendedorEditandoId ? 'Guardar cambios' : 'Crear vendedor' }}</button>
+        <button type="submit">{{ vendedorEditandoId ? 'Guardar Cambios' : 'Crear Vendedor' }}</button>
         @if (vendedorEditandoId) {
           <button type="button" class="btn-secondary" (click)="cancelarEdicionVendedor()">Cancelar</button>
         }
@@ -236,7 +236,7 @@
     <h2>{{ reglaEditandoId ? 'Editar Regla de Comisión' : 'Nueva Regla Escalonada' }}</h2>
     <form class="crud-form" [class.mobile]="responsiveService.isMobile()" (ngSubmit)="guardarRegla()">
       <div class="form-group">
-        <label for="rMonto">Monto mínimo ($)</label>
+        <label for="rMonto">Monto Mínimo ($)</label>
         <input 
           id="rMonto" 
           type="number" 
@@ -247,7 +247,7 @@
       </div>
 
       <div class="form-group">
-        <label for="rPct">Porcentaje de comisión (%)</label>
+        <label for="rPct">Porcentaje de Comisión (%)</label>
         <input 
           id="rPct" 
           type="number" 
@@ -258,7 +258,7 @@
       </div>
 
       <div class="form-actions">
-        <button type="submit">{{ reglaEditandoId ? 'Guardar cambios' : 'Crear regla' }}</button>
+        <button type="submit">{{ reglaEditandoId ? 'Guardar Cambios' : 'Crear Regla' }}</button>
         @if (reglaEditandoId) {
           <button type="button" class="btn-secondary" (click)="cancelarEdicionRegla()">Cancelar</button>
         }
@@ -304,7 +304,7 @@
                 <strong>Regla #{{ r.id }}</strong>
                 <span class="badge">{{ r.porcentaje_comision }}%</span>
               </div>
-              <p><strong>Monto mínimo:</strong> ${{ r.monto_minimo | number:'1.2-2' }}</p>
+              <p><strong>Monto Mínimo:</strong> ${{ r.monto_minimo | number:'1.2-2' }}</p>
               <div class="card-actions">
                 <button type="button" class="btn-sm btn-edit" (click)="editarRegla(r)">Editar</button>
                 <button type="button" class="btn-sm btn-delete" (click)="eliminarRegla(r.id)">Eliminar</button>

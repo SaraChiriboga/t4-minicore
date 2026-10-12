@@ -4,7 +4,7 @@
     <h1>Portal del Vendedor</h1>
     <p class="user-greeting">Conectado como: <span>{{ userName }}</span> (Vendedor #{{ vendedorId }})</p>
   </div>
-  <button type="button" class="btn-logout" (click)="logout()">Cerrar sesión</button>
+  <button type="button" class="btn-logout" (click)="logout()">Cerrar Sesión</button>
 </header>
 
 <!-- avisos y notificaciones -->
@@ -23,7 +23,7 @@
 
     <form class="sale-form" [class.mobile]="responsiveService.isMobile()" (ngSubmit)="registrarVenta()">
       <div class="form-group">
-        <label for="vMonto">Monto de la venta ($)</label>
+        <label for="vMonto">Monto de la Venta ($)</label>
         <input 
           id="vMonto" 
           type="number" 
@@ -36,7 +36,7 @@
       </div>
 
       <div class="form-group">
-        <label for="vFecha">Fecha de la venta</label>
+        <label for="vFecha">Fecha de la Venta</label>
         <input 
           id="vFecha" 
           type="date" 
@@ -46,7 +46,7 @@
       </div>
 
       <button type="submit" [disabled]="loading()">
-        {{ loading() ? 'Guardando...' : 'Guardar venta' }}
+        {{ loading() ? 'Guardando...' : 'Guardar Venta' }}
       </button>
     </form>
   </section>
@@ -57,7 +57,7 @@
     <p class="subtitle">Revisa tus ventas acumuladas y la comisión ganada en el periodo.</p>
 
     <!-- filtro de fechas -->
-    <form class="filter-form" [class.mobile]="responsiveService.isMobile()" (ngSubmit)="cargarComision()">
+    <form class="filter-form" [class.mobile]="responsiveService.isMobile()" (ngSubmit)="filtrar()">
       <div class="form-group">
         <label for="fInicio">Desde</label>
         <input 
@@ -85,17 +85,17 @@
     <!-- tarjetas con resumen de comisiones -->
     <div class="summary-cards" [class.mobile]="responsiveService.isMobile()">
       <div class="summary-card">
-        <span class="label">Total vendido</span>
+        <span class="label">Total Vendido</span>
         <span class="value">${{ (miComision()?.total_vendido || 0) | number:'1.2-2' }}</span>
       </div>
 
       <div class="summary-card">
-        <span class="label">% de comisión</span>
+        <span class="label">% de Comisión</span>
         <span class="value">{{ miComision()?.porcentaje_comision || 0 }}%</span>
       </div>
 
       <div class="summary-card highlight">
-        <span class="label">Comisión ganada</span>
+        <span class="label">Comisión Ganada</span>
         <span class="value text-success">${{ (miComision()?.comision_calculada || 0) | number:'1.2-2' }}</span>
       </div>
     </div>
