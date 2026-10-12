@@ -1,188 +1,225 @@
-# CRUD MVC con Lucky y Angular
+# T4-Minicore: Sistema de Cálculo de Comisiones por Ventas (MVC + RBAC)
 
-![Lucky Framework](https://img.shields.io/badge/Backend-Lucky%20Framework%201.5-blue?style=for-the-badge&logo=crystal&logoColor=white)
-![Crystal Language](https://img.shields.io/badge/Language-Crystal-black?style=for-the-badge&logo=crystal&logoColor=white)
-![Angular](https://img.shields.io/badge/Frontend-Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white)
+<div align="center">
+
+![Lucky Framework](https://img.shields.io/badge/Backend-Lucky%20Framework%201.5-000000?style=for-the-badge&logo=crystal&logoColor=white)
+![Crystal Language](https://img.shields.io/badge/Language-Crystal-222222?style=for-the-badge&logo=crystal&logoColor=white)
+![Angular](https://img.shields.io/badge/Frontend-Angular%2022-DD0031?style=for-the-badge&logo=angular&logoColor=white)
+![TypeScript](https://img.shields.io/badge/Language-TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white)
-![JWT Authentication](https://img.shields.io/badge/Auth-JWT%20%2B%20Bcrypt-green?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
+![JWT Authentication](https://img.shields.io/badge/Security-JWT%20%2B%20Bcrypt-059669?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
+![Responsive Design](https://img.shields.io/badge/UI-Responsive%20CDK-0d9488?style=for-the-badge&logo=googlechrome&logoColor=white)
+![RBAC Protected](https://img.shields.io/badge/Access-RBAC%20Enforced-7c3aed?style=for-the-badge&logo=auth0&logoColor=white)
 
-Aplicación web desarrollada bajo el patrón arquitectónico **Modelo-Vista-Controlador (MVC)** que implementa un sistema integral de **Autenticación (Login)** y un módulo protegido para la gestión de usuarios (**CRUD completo: Crear, Leer, Actualizar y Eliminar**).
+**Plataforma web empresarial para el registro transaccional de ventas y liquidación escalonada de comisiones comerciales.**  
+Construida bajo el patrón arquitectónico **Modelo-Vista-Controlador (MVC)** desacoplado con **Control de Acceso Basado en Roles (RBAC)**.
 
-El sistema cuenta con **seguridad de doble capa**: protección perimetral en cliente mediante *Guards* e interceptores HTTP en Angular, y validación estricta a nivel de servidor con *Tokens JWT*, *Bcrypt* y filtros de autorización en Lucky Framework.
+</div>
 
 ---
 
 ## 📑 Tabla de Contenidos
 
-1. [📹 Video Demostrativo](#-video-demostrativo)
-2. [✨ Características del Proyecto](#-características-del-proyecto)
-3. [🏛️ Arquitectura MVC y Flujo del Tech Stack](#️-arquitectura-mvc-y-flujo-del-tech-stack)
-4. [🔒 Seguridad y Encriptación de Contraseñas](#-seguridad-y-encriptación-de-contraseñas)
-5. [🛠️ Tecnologías Utilizadas (Tech Stack)](#️-tecnologías-utilizadas-tech-stack)
-6. [📁 Estructura del Repositorio](#-estructura-del-repositorio)
-7. [🚀 Instalación y Puesta en Marcha](#-instalación-y-puesta-en-marcha)
-8. [🔑 Credenciales de Prueba](#-credenciales-de-prueba)
+1. [✨ Características Destacadas](#-características-destacadas)
+2. [🔑 Credenciales de Acceso y Roles](#-credenciales-de-acceso-y-roles)
+3. [🏛️ Arquitectura MVC Desacoplada](#️-arquitectura-mvc-desacoplada)
+4. [🔄 Flujo Operativo y Matriz RBAC](#-flujo-operativo-y-matriz-rbac)
+5. [📱 Diseño Adaptativo (Responsive Service)](#-diseño-adaptativo-responsive-service)
+6. [🛠️ Tecnologías Utilizadas (Tech Stack)](#️-tecnologías-utilizadas-tech-stack)
+7. [📁 Estructura del Repositorio](#-estructura-del-repositorio)
+8. [🚀 Instalación y Puesta en Marcha](#-instalación-y-puesta-en-marcha)
+9. [🌐 Matriz de Endpoints REST API](#-matriz-de-endpoints-rest-api)
+10. [👩‍💻 Autora y Contacto](#-autora-y-contacto)
 
 ---
 
-## 📹 Video Demostrativo
+## ✨ Características Destacadas
 
-> [!IMPORTANT]
-> **Enlace al video explicativo (máx. 3 minutos):**
-> 🔗 **[Ver Video en Loom / YouTube](https://www.loom.com/)** *(Reemplazar con tu enlace final)*
-
-### Contenido evaluado en el video:
-- **0:00 - 0:45 | Demostración del Login:** Inicio de sesión con credenciales válidas y manejo de feedback visual ante errores.
-- **0:45 - 1:30 | Verificación de Rutas Protegidas:** Demostración de que es imposible acceder a `/users` sin autenticación (redirección forzada al login en frontend y respuesta `401 Unauthorized` / `403 Forbidden` a nivel API).
-- **1:30 - 2:15 | Operaciones CRUD:** Creación de un usuario, lectura detallada en modal, actualización de información y eliminación reactiva en tiempo real.
-- **2:15 - 3:00 | Tech Stack a Fondo y Encriptación:** Explicación del orden de las cosas en la arquitectura MVC (Angular + Lucky + PostgreSQL) y cómo viaja y se encripta la contraseña usando Bcrypt.
-
----
-
-## ✨ Características del Proyecto
-
-[x] **Autenticación Robusta:** Flujo de inicio de sesión con generación de tokens JWT firmados ([`create.cr`](t4-minicore-api/src/actions/api/sign_ins/create.cr) y [`auth.service.ts`](t4-minicore-web/src/app/core/services/auth.service.ts)).
-
-[x] **Rutas Protegidas (Doble Capa):**
-  - **Frontend:** [`authGuard`](t4-minicore-web/src/app/core/guards/auth.guard.ts) y [`adminGuard`](t4-minicore-web/src/app/core/guards/admin.guard.ts) impiden el acceso a rutas sin token o sin rol de administrador.
-  - **Backend:** `Api::Auth::RequireAuthToken` en [`api_action.cr`](t4-minicore-api/src/actions/api_action.cr) rechaza solicitudes no autorizadas en cada endpoint del CRUD.
-
-[x] **CRUD Completo de Usuarios:**
-  - **Create (Crear):** Formulario para registrar nuevos usuarios con validación de datos ([`users.ts`](t4-minicore-web/src/app/pages/users/users.ts) y [`create.cr`](t4-minicore-api/src/actions/api/users/create.cr)).
-  - **Read (Leer):** Listado general reactivo y visualización individual de detalles con modal SweetAlert2 ([`index.cr`](t4-minicore-api/src/actions/api/users/index.cr) y [`read.cr`](t4-minicore-api/src/actions/api/users/read.cr)).
-  - **Update (Actualizar):** Modo de edición dinámico reutilizando el formulario de entrada ([`update.cr`](t4-minicore-api/src/actions/api/users/update.cr)).
-  - **Delete (Eliminar):** Eliminación controlada de registros en base de datos ([`delete.cr`](t4-minicore-api/src/actions/api/users/delete.cr)).
-
-[x] **Control de Acceso Basado en Roles (RBAC):** Separación de privilegios entre usuarios regulares y administradores ([`user.cr`](t4-minicore-api/src/models/user.cr)).
-
-[x] **Encriptación de Contraseñas:** Algoritmo de hashing seguro (Bcrypt) mediante `Authentic` en [`sign_up_user.cr`](t4-minicore-api/src/operations/sign_up_user.cr), evitando el almacenamiento de contraseñas en texto plano.
+* **👑 Panel Exclusivo de Administración (`/admin`):**
+  - **Gestión de Vendedores:** alta, consulta, modificación y baja de personal de ventas.
+  - **Reglas Escalonadas de Comisión:** definición dinámica de metas de venta y porcentajes de incentivo aplicados.
+  - **Reporte Consolidado Global:** auditoría por rango de fechas que calcula el total vendido y la comisión devengada por cada asesor comercial.
+* **💼 Portal Personal del Vendedor (`/portal-vendedor`):**
+  - **Registro Seguro de Ventas:** registro de transacciones con monto y fecha; el backend asigna automáticamente la autoría a partir del token JWT del vendedor autenticado.
+  - **Cálculo de Comisión en Tiempo Real:** consulta de monto acumulado vendido, porcentaje alcanzado en las escalas y comisión neta ganada en el periodo.
+  - **Historial Transaccional:** auditoría de ventas individuales registradas por el usuario en sesión.
+* **🛡️ Seguridad de Doble Capa (Client & Server RBAC):**
+  - En cliente: guards funcionales de Angular ([`authGuard`](t4-minicore-web/src/app/core/guards/auth.guard.ts), [`adminGuard`](t4-minicore-web/src/app/core/guards/admin.guard.ts), [`vendedorGuard`](t4-minicore-web/src/app/core/guards/vendedor.guard.ts)).
+  - En servidor: filtros antes de acción (`require_admin`, `require_admin_or_vendedor`) y aislamiento a nivel de consulta en base de datos.
+* **📱 Adaptabilidad Móvil y Tema Claro (Light Theme):**
+  - Interfaz responsiva con diseño limpio, tablas completas en escritorio y tarjetas de inspección rápida en dispositivos móviles gracias a Angular CDK Layout.
 
 ---
 
-## 🏛️ Arquitectura MVC y Flujo del Tech Stack
+## 🔑 Credenciales de Acceso y Roles
 
-El sistema implementa de forma rigurosa la separación de responsabilidades del patrón **Modelo-Vista-Controlador (MVC)** desacoplado en dos capas modernas:
+El sistema cuenta con usuarios de prueba sembrados en la base de datos con contraseñas encriptadas mediante **Bcrypt**:
 
-| Capa MVC | Tecnología | Archivos / Componentes Clave | Responsabilidad en la Solución |
+| Rol del Sistema | Correo Electrónico | Contraseña | Destino en Login | Permisos y Alcance |
+| :--- | :--- | :--- | :--- | :--- |
+| **👑 Administrador** | `admin@t4-minicore.com` | `password123` | [`/admin`](t4-minicore-web/src/app/pages/admin/admin.ts) | Control total: gestión de vendedores, reglas comerciales, reporte consolidado global y administración de usuarios (`/users`). |
+| **💼 Vendedor** | `vendedor@t4-minicore.com` | `password123` | [`/portal-vendedor`](t4-minicore-web/src/app/pages/portal-vendedor/portal-vendedor.ts) | Operativa comercial: registrar ventas propias, auditar comisiones ganadas e historial personal (ID de Vendedor asociado: #3). |
+
+---
+
+## 🏛️ Arquitectura MVC Desacoplada
+
+La solución aplica el patrón **Modelo-Vista-Controlador** de manera estricta y desacoplada:
+
+```mermaid
+flowchart LR
+    subgraph ViewLayer["👁️ VISTA (Angular SPA - Light Theme)"]
+        LoginUI["Login (/login)"]
+        AdminUI["Panel Admin (/admin)"]
+        SellerUI["Portal Vendedor (/portal-vendedor)"]
+    end
+
+    subgraph ControllerLayer["🎮 CONTROLADOR (Lucky Actions)"]
+        AuthAction["Api::SignIns::Create"]
+        VendAction["Api::Vendedor::* (require_admin)"]
+        ReglaAction["Api::Regla::* (require_admin)"]
+        VentaAction["Api::Ventas::* (RBAC Guard)"]
+    end
+
+    subgraph ModelLayer["🧠 MODELO (Avram ORM & PostgreSQL)"]
+        UserModel["User & UserToken"]
+        VendModel["Vendedor (has_many Ventas)"]
+        ReglaModel["Regla (Escalones)"]
+        VentaModel["Venta (belongs_to Vendedor)"]
+    end
+
+    ViewLayer <-->|Peticiones HTTP REST + JWT| ControllerLayer
+    ControllerLayer <-->|Consultas Seguras & Serializers| ModelLayer
+```
+
+| Capa MVC | Responsable Tecnológico | Módulos Clave | Función en el Sistema |
 | :--- | :--- | :--- | :--- |
-| **🧠 Modelo (Model)** | **Avram ORM & Operations** *(Crystal)* | • [`user.cr`](t4-minicore-api/src/models/user.cr)<br>• [`user_token.cr`](t4-minicore-api/src/models/user_token.cr)<br>• [`sign_up_user.cr`](t4-minicore-api/src/operations/sign_up_user.cr)<br>• [`update_user.cr`](t4-minicore-api/src/operations/update_user.cr) | Define las entidades, tipos de datos, interacción con PostgreSQL, reglas de negocio y el hashing seguro de passwords con Bcrypt. |
-| **👁️ Vista (View)** | **Angular SPA & Lucky Serializers** | • Login: [`login.ts`](t4-minicore-web/src/app/pages/login/login.ts) / [`login.html`](t4-minicore-web/src/app/pages/login/login.html)<br>• Users CRUD: [`users.ts`](t4-minicore-web/src/app/pages/users/users.ts) / [`users.html`](t4-minicore-web/src/app/pages/users/users.html)<br>• [`user_serializer.cr`](t4-minicore-api/src/serializers/user_serializer.cr) | Renderiza la interfaz gráfica reactiva para el usuario y formatea las respuestas JSON de la API ocultando datos sensibles. |
-| **🎮 Controlador (Controller)** | **Lucky Actions** *(Crystal)* | • [`api_action.cr`](t4-minicore-api/src/actions/api_action.cr)<br>• [`sign_ins/create.cr`](t4-minicore-api/src/actions/api/sign_ins/create.cr)<br>• Users Actions: [`index.cr`](t4-minicore-api/src/actions/api/users/index.cr) \| [`create.cr`](t4-minicore-api/src/actions/api/users/create.cr) \| [`read.cr`](t4-minicore-api/src/actions/api/users/read.cr) \| [`update.cr`](t4-minicore-api/src/actions/api/users/update.cr) \| [`delete.cr`](t4-minicore-api/src/actions/api/users/delete.cr) | Recibe las peticiones HTTP, verifica tokens JWT, aplica filtros de autorización (`require_admin`) y coordina modelos y vistas. |
+| **🧠 Modelo** | **Avram ORM** *(Crystal)* | [`User`](t4-minicore-api/src/models/user.cr), [`Vendedor`](t4-minicore-api/src/models/vendedor.cr), [`Regla`](t4-minicore-api/src/models/regla.cr), [`Venta`](t4-minicore-api/src/models/venta.cr) | Define la estructura de datos, claves foráneas, validaciones de negocio en SaveOperations y el hashing unidireccional con Bcrypt. |
+| **🎮 Controlador** | **Lucky Actions** *(Crystal)* | `Api::SignIns::Create`, `Api::Vendedor::*`, `Api::Regla::*`, `Api::Ventas::*` | Enruta peticiones HTTP, verifica tokens JWT, aplica filtros de autorización según rol y serializa la respuesta JSON. |
+| **👁️ Vista** | **Angular SPA & Serializers** | [`Login`](t4-minicore-web/src/app/pages/login/login.ts), [`Admin`](t4-minicore-web/src/app/pages/admin/admin.ts), [`PortalVendedor`](t4-minicore-web/src/app/pages/portal-vendedor/portal-vendedor.ts) | Interfaz de usuario reactiva en tema claro con señales (Signals), adaptativa a cualquier tamaño de pantalla. |
 
-### El Flujo de una Petición Protegida
+---
+
+## 🔄 Flujo Operativo y Matriz RBAC
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Usuario
-    participant V as Vista (Angular UI)
-    participant G as Guards / Interceptor
-    participant C as Controlador (Lucky Action)
-    participant M as Modelo (Avram ORM)
-    participant DB as PostgreSQL
+    actor Vendedor
+    participant Web as Angular Frontend
+    participant API as Lucky API Controller
+    participant DB as PostgreSQL (Avram)
 
-    Usuario->>V: Ingresa credenciales y envía Login
-    V->>C: POST /api/sign_ins (email, password)
-    C->>M: SignInUser.run() valida hash con Bcrypt
-    M-->>C: Usuario autenticado válido
-    C-->>V: Retorna JWT Token + Datos de usuario
-    V->>V: Almacena Token en LocalStorage
+    Vendedor->>Web: Ingresa credenciales (vendedor@t4-minicore.com)
+    Web->>API: POST /api/sign_ins
+    API->>DB: Valida hash Bcrypt y recupera rol regular + vendedor_id (3)
+    API-->>Web: Retorna JWT con claims { role: "Regular", vendedor_id: 3 }
+    Web->>Web: Guarda token y redirige a /portal-vendedor (vendedorGuard OK)
 
-    Note over Usuario,V: Intento de acceder a la sección protegida (/users)
-    Usuario->>V: Navega a /users
-    V->>G: authGuard verifica presencia de Token
-    G-->>V: Acceso autorizado en UI
+    Vendedor->>Web: Registra venta (monto: $1,500, fecha: hoy)
+    Web->>API: POST /api/ventas (Bearer Token)
+    API->>API: Detecta rol regular: inyecta automáticamente vendedor_id = 3
+    API->>DB: Guarda venta vinculada al vendedor #3
+    API-->>Web: 201 Created (VentaSerializer)
 
-    V->>G: authInterceptor adjunta Header Bearer Token
-    G->>C: GET /api/users (Authorization: Bearer <token>)
-    C->>C: ApiAction valida firma de JWT y rol Admin
-    C->>M: UserQuery.new realiza consulta
-    M->>DB: SELECT * FROM users
-    DB-->>M: Registros de usuarios
-    M->>C: UserSerializer procesa datos (omite password)
-    C-->>V: Respuesta JSON 200 OK con usuarios
-    V-->>Usuario: Renderiza tabla CRUD de usuarios
+    Vendedor->>Web: Consulta comisiones del periodo
+    Web->>API: GET /api/ventas?reporte=true
+    API->>DB: Consulta ventas exclusivas del vendedor #3 y reglas activas
+    API->>API: Calcula escalón alcanzado (ej. total >= $1,000 -> 5%)
+    API-->>Web: 200 OK con { total_vendido, porcentaje_comision, comision_calculada }
+    Web-->>Vendedor: Renderiza tarjetas de métricas e historial
 ```
 
 ---
 
-## 🔒 Seguridad y Encriptación de Contraseñas
+## 📱 Diseño Adaptativo (Responsive Service)
 
-En este proyecto se utilizó **Bcrypt**, el estándar de la industria recomendado sobre algoritmos obsoletos como MD5 o SHA-1:
+La aplicación utiliza un servicio centralizado reactivo basado en `@angular/cdk/layout`:
 
-1. **Hashing Unidireccional con Salt:** Al registrar un usuario en [`sign_up_user.cr`](t4-minicore-api/src/operations/sign_up_user.cr), el shard `Authentic` ejecuta:
-   ```crystal
-   Authentic.copy_and_encrypt(password, to: encrypted_password)
-   ```
-2. **Protección en Base de Datos:** En el modelo [`user.cr`](t4-minicore-api/src/models/user.cr), la columna en PostgreSQL se define como `column encrypted_password : String`. El valor original en texto plano nunca se persiste.
-3. **Serialización Segura:** En [`user_serializer.cr`](t4-minicore-api/src/serializers/user_serializer.cr), el campo `encrypted_password` está estrictamente excluido para garantizar que ningún hash viaje hacia el cliente.
-4. **Verificación en Login:** En [`sign_in_user.cr`](t4-minicore-api/src/operations/sign_in_user.cr), la contraseña ingresada se procesa contra el salt y hash almacenados; si coinciden, se emite un JSON Web Token (JWT) mediante [`user_token.cr`](t4-minicore-api/src/models/user_token.cr).
+```typescript
+// src/app/core/services/responsive.service.ts
+@Injectable({ providedIn: 'root' })
+export class ResponsiveService {
+  private breakpointObserver = inject(BreakpointObserver);
+  private screenWidth = toSignal(
+    this.breakpointObserver.observe([
+      '(max-width: 600px)',
+      '(min-width: 601px) and (max-width: 1000px)',
+      '(min-width: 1001px)'
+    ])
+  );
+
+  isMobile = computed(() => !!this.screenWidth()?.breakpoints['(max-width: 600px)']);
+  isTablet = computed(() => !!this.screenWidth()?.breakpoints['(min-width: 601px) and (max-width: 1000px)']);
+  isDesktop = computed(() => !!this.screenWidth()?.breakpoints['(min-width: 1001px)']);
+}
+```
+
+* **Modo Escritorio (`isDesktop`):** Tablas de datos completas, paneles en dos columnas y controles alineados horizontalmente.
+* **Modo Móvil (`isMobile`):** Conversión automática a tarjetas compactas individuales (`.cards-list`), formularios apilados verticalmente y botones de acción accesibles.
 
 ---
 
 ## 🛠️ Tecnologías Utilizadas (Tech Stack)
 
-### Backend (API REST MVC)
-- **[Crystal Language](https://crystal-lang.org/):** Lenguaje compilado con sintaxis inspirada en Ruby y rendimiento equivalente a C.
-- **[Lucky Framework (v1.5.0)](https://luckyframework.org/):** Framework web fullstack fuertemente tipado que previene errores en tiempo de compilación.
-- **[Avram ORM](https://github.com/luckyframework/avram):** Mapeo objeto-relacional seguro contra inyecciones SQL.
-- **[Authentic & JWT](https://github.com/luckyframework/authentic):** Sistema de hashing Bcrypt y gestión de tokens de sesión.
+### Backend
+* **[Crystal Language](https://crystal-lang.org/):** Lenguaje compilado fuertemente tipado con rendimiento cercano a C.
+* **[Lucky Framework v1.5](https://luckyframework.org/):** Framework MVC rápido y seguro contra errores en tiempo de compilación.
+* **[Avram ORM](https://github.com/luckyframework/avram):** Manejo de entidades, migraciones y consultas SQL seguras.
+* **[Authentic](https://github.com/luckyframework/authentic):** Hashing seguro de contraseñas con **Bcrypt** y generación de JWT.
 
-### Frontend (Single Page Application)
-- **[Angular (v22)](https://angular.dev/):** Framework empresarial para aplicaciones web.
-- **Angular Signals:** Manejo reactivo de estado para listas de usuarios y formularios.
-- **Angular Router & Guards:** Control de acceso perimetral (`CanActivateFn`).
-- **HTTP Client & Interceptors:** Inyección automática de tokens Bearer en cabeceras.
-- **SweetAlert2:** Alertas y modales interactivos para visualización de detalles y confirmaciones.
+### Frontend
+* **[Angular v22](https://angular.dev/):** Framework empresarial SPA.
+* **Angular Signals:** Gestión de estado reactivo y granular.
+* **Angular CDK Layout:** Detección de breakpoints para comportamiento responsivo.
+* **Angular Router & Guards:** Control de navegación perimetral.
+* **CSS3 Simple (Light Theme):** Paleta moderna basada en blanco (`#ffffff`), grises suaves (`#f8fafc`, `#e2e8f0`) y verde azulado corporativo (`#0d9488`).
 
-### Base de Datos e Infraestructura
-- **[PostgreSQL](https://www.postgresql.org/):** Sistema de gestión de bases de datos relacional.
-- **Docker & Docker Compose:** Contenedores para base de datos y entorno de ejecución.
+### Base de Datos
+* **[PostgreSQL](https://www.postgresql.org/):** Motor relacional con integridad referencial y claves foráneas.
 
 ---
 
 ## 📁 Estructura del Repositorio
 
-```
+```text
 t4-minicore/
-│
-├── t4-minicore-api/                     # ⚙️ BACKEND (Lucky Framework MVC)
-│   ├── config/                          # Configuración de base de datos y servidor
+├── t4-minicore-api/                     # ⚙️ Backend en Lucky Framework (Crystal)
+│   ├── config/                          # Configuración de base de datos, cookies y tokens
 │   ├── db/
-│   │   ├── migrations/                  # Migraciones de base de datos
-│   │   └── seed/                        # Semillas de datos iniciales
+│   │   ├── migrations/                  # Migraciones estructurales (Users, Vendedores, Ventas, Reglas)
+│   │   └── seed/                        # Semillas con datos iniciales (sample_data.cr)
 │   └── src/
-│       ├── actions/                     # 🎮 CONTROLADORES (Actions)
-│       │   ├── api_action.cr            # Base controller (AuthToken & RequireAdmin)
+│       ├── actions/                     # 🎮 Controladores
+│       │   ├── api_action.cr            # Control base con require_admin y require_vendedor
 │       │   └── api/
-│       │       ├── sign_ins/create.cr   # Endpoint de Login (POST /api/sign_ins)
-│       │       └── users/               # Endpoints del CRUD (/api/users)
-│       ├── models/                      # 🧠 MODELOS (Entidades Avram)
-│       │   ├── user.cr                  # Modelo de Usuario y Roles
-│       │   └── user_token.cr            # Generación y validación de JWT
-│       ├── operations/                  # Lógica de Negocio y Validaciones
-│       │   ├── sign_in_user.cr          # Verificación de credenciales
-│       │   ├── sign_up_user.cr          # Creación y hashing de passwords
-│       │   └── update_user.cr           # Actualización de datos
-│       └── serializers/                 # 👁️ VISTAS JSON
-│           └── user_serializer.cr       # Formateo de respuesta sin campos sensibles
+│       │       ├── sign_ins/create.cr   # Endpoint de autenticación (JWT)
+│       │       ├── vendedor/            # CRUD REST de vendedores (Solo Admin)
+│       │       ├── regla/               # CRUD REST de reglas de comisión (Solo Admin)
+│       │       ├── ventas/              # Registro y reporte de comisiones (Admin y Vendedor)
+│       │       └── users/               # CRUD de usuarios del sistema
+│       ├── models/                      # 🧠 Modelos Avram
+│       │   ├── user.cr                  # Usuario con rol y vendedor_id foráneo
+│       │   ├── vendedor.cr              # Entidad vendedor vinculada a ventas y usuario
+│       │   ├── venta.cr                 # Registro de transacción comercial
+│       │   └── regla.cr                 # Escalones de monto mínimo y porcentaje
+│       ├── operations/                  # Operaciones de guardado y validaciones
+│       └── serializers/                 # Serializadores JSON (ComisionSerializer, VendedorSerializer, etc.)
 │
-├── t4-minicore-web/                      # 🎨 FRONTEND (Angular)
+├── t4-minicore-web/                      # 🎨 Frontend en Angular 22 (SPA)
 │   └── src/app/
 │       ├── core/
-│       │   ├── guards/                  # 🛡️ Protección de Rutas
-│       │   │   ├── auth.guard.ts        # Bloquea navegación a usuarios no autenticados
-│       │   │   └── admin.guard.ts       # Valida rol administrativo
-│       │   ├── interceptors/
-│       │   │   └── auth.interceptor.ts  # Inyecta Bearer token en cada request HTTP
-│       │   └── services/
-│       │       ├── auth.service.ts      # Manejo de sesión y LocalStorage
-│       │       └── user.service.ts      # Consumo de endpoints CRUD
-│       └── pages/                       # 👁️ VISTAS (Componentes UI)
-│           ├── login/                   # Interfaz de inicio de sesión
-│           └── users/                   # Interfaz completa del CRUD de usuarios
+│       │   ├── guards/                  # Protecciones de ruta (authGuard, adminGuard, vendedorGuard)
+│       │   ├── interceptors/            # Inyección de Bearer Token en peticiones HTTP
+│       │   └── services/                # AuthService, ComisionesService, VendedorService, ReglaService, ResponsiveService
+│       ├── pages/                       # Vistas de la aplicación
+│       │   ├── login/                   # Inicio de sesión con redirección por rol
+│       │   ├── admin/                   # Panel de administración (vendedores, reglas y reporte global)
+│       │   ├── portal-vendedor/         # Portal del vendedor (registrar venta y mis comisiones)
+│       │   └── users/                   # Gestión de usuarios
+│       └── shared/models/               # Modelos e interfaces TypeScript
 │
-└── README.md                            # Documentación principal del proyecto
+└── README.md                            # Documentación integral del sistema
 ```
 
 ---
@@ -190,15 +227,15 @@ t4-minicore/
 ## 🚀 Instalación y Puesta en Marcha
 
 ### Prerrequisitos
-- **Crystal** `>= 1.20.0` y **Lucky CLI**
+- **Crystal** `>= 1.10.0` y **Lucky CLI**
 - **Node.js** `>= 18.x` y **npm**
-- **PostgreSQL** `>= 14.x` (o Docker)
+- **PostgreSQL** `>= 14.x` en ejecución local
 
 ---
 
-### Paso 1: Clonar el repositorio
+### Paso 1: Clonar el Repositorio
 ```bash
-git clone https://github.com/tu-usuario/t4-minicore.git
+git clone git@github.com:SaraChiriboga/t4-minicore.git
 cd t4-minicore
 ```
 
@@ -206,7 +243,7 @@ cd t4-minicore
 
 ### Paso 2: Configurar y Levantar el Backend (`t4-minicore-api`)
 
-1. Navegar a la carpeta del backend:
+1. Ingresar a la carpeta de la API:
    ```bash
    cd t4-minicore-api
    ```
@@ -214,23 +251,26 @@ cd t4-minicore
    ```bash
    shards install
    ```
-3. Configurar variables de entorno (crear archivo `.env` si es necesario):
+3. Configurar variables de base de datos en `.env` (si es necesario):
    ```bash
-   # Configuración por defecto de PostgreSQL
    DB_HOST=localhost
    DB_PORT=5432
-   DB_USERNAME=postgres
-   DB_PASSWORD=postgres
+   DB_USER=lucky
+   DB_PASSWORD=lucky
    ```
-4. Crear la base de datos y ejecutar las migraciones:
+4. Crear la base de datos y correr las migraciones:
    ```bash
    lucky db.create
    lucky db.migrate
    ```
-5. Iniciar el servidor API (por defecto en el puerto `3000`):
+5. Cargar las semillas de prueba (vendedores, ventas, reglas y usuarios de acceso):
+   ```bash
+   crystal run db/seed/sample_data.cr
+   ```
+6. Iniciar el servidor API (puerto `3000`):
    ```bash
    lucky dev
-   # o alternativamente:
+   # o directamente:
    crystal run src/t4_minicore_api.cr
    ```
 
@@ -242,42 +282,53 @@ cd t4-minicore
    ```bash
    cd t4-minicore-web
    ```
-2. Instalar paquetes de npm:
+2. Instalar dependencias de Node:
    ```bash
    npm install
    ```
-3. Iniciar el servidor de desarrollo de Angular:
+3. Compilar y levantar la aplicación de desarrollo:
    ```bash
    ng serve
    ```
-4. Abrir en el navegador:
+4. Ingresar desde el navegador web:
    ```
    http://localhost:4200
    ```
 
 ---
 
-## 🔑 Credenciales de Prueba
+## 🌐 Matriz de Endpoints REST API
 
-Para facilitar la evaluación de la entrega y las pruebas del sistema, puede utilizar los siguientes datos de acceso:
-
-| Rol | Correo Electrónico | Contraseña | Permisos / Acceso |
-| :--- | :--- | :--- | :--- |
-| **Administrador** | `admin@t4-minicore.com` | `password123` | Acceso completo al Login y al CRUD protegido (`/users`) |
+| Módulo | Método | Endpoint | Permiso Requerido | Descripción |
+| :--- | :--- | :--- | :--- | :--- |
+| **Auth** | `POST` | `/api/sign_ins` | Público | Autentica credenciales y emite token JWT con rol. |
+| **Vendedor** | `GET` | `/api/vendedor` | Admin | Lista todos los vendedores. |
+| **Vendedor** | `POST` | `/api/vendedor` | Admin | Crea un nuevo vendedor. |
+| **Vendedor** | `PUT` | `/api/vendedor/:id` | Admin | Modifica datos del vendedor. |
+| **Vendedor** | `DELETE` | `/api/vendedor/:id` | Admin | Elimina un vendedor. |
+| **Reglas** | `GET` | `/api/regla` | Admin | Lista los escalones de comisión. |
+| **Reglas** | `POST` | `/api/regla` | Admin | Crea una nueva regla de comisión. |
+| **Reglas** | `PUT` | `/api/regla/:id` | Admin | Actualiza una regla existente. |
+| **Reglas** | `DELETE` | `/api/regla/:id` | Admin | Elimina una regla. |
+| **Ventas** | `POST` | `/api/ventas` | Admin o Vendedor | Registra venta. Vendedor auto-asigna su ID; Admin puede asignar cualquiera. |
+| **Ventas** | `GET` | `/api/ventas` | Admin o Vendedor | Lista ventas. Si es Vendedor, aísla solo sus transacciones. |
+| **Reporte** | `GET` | `/api/ventas?reporte=true` | Admin o Vendedor | Calcula comisiones según fechas y reglas. Vendedor ve solo su ganancia. |
+| **Usuarios** | `*` | `/api/users/**` | Admin | CRUD integral de cuentas de acceso. |
 
 ---
+
+## 👩‍💻 Autora y Contacto
+
 <div align="center">
 
 ### Sara Chiriboga
 *Estudiante de Ingeniería de Software · Universidad de las Américas*
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](www.linkedin.com/in/sara-chiriboga-112bb33ba)
-[![GitHub Personal](https://img.shields.io/badge/GitHub_Personal-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/sarilola)
-[![GitHub Académico](https://img.shields.io/badge/GitHub_UDLA-990000?style=flat-square&logo=github&logoColor=white)](https://github.com/SaraChiriboga)
-[![Discord](https://img.shields.io/badge/Discord-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discordapp.com/users/1141563506152448090)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/sara-chiriboga-112bb33ba)
+[![GitHub Personal](https://img.shields.io/badge/GitHub_Personal-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/sarilola)
+[![GitHub Académico](https://img.shields.io/badge/GitHub_UDLA-990000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/SaraChiriboga)
+[![Discord](https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discordapp.com/users/1141563506152448090)
 
-💬 *¿Tienes alguna duda sobre la arquitectura de este proyecto? ¡Conectemos!*
+💬 *¿Dudas o comentarios sobre la arquitectura o implementación? ¡Conectemos!*
 
 </div>
-
-
