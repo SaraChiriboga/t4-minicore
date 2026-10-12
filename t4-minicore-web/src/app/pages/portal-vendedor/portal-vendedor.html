@@ -1,5 +1,5 @@
-<!-- barra superior -->
-<header class="top-bar">
+<!-- barra superior con saludo y boton salir -->
+<header class="top-bar" [class.mobile]="responsiveService.isMobile()">
   <div>
     <h1>Portal del Vendedor</h1>
     <p class="user-greeting">conectado como: <span>{{ userName }}</span> (vendedor #{{ vendedorId }})</p>
@@ -15,13 +15,13 @@
   <div class="alert danger">{{ error() }}</div>
 }
 
-<div class="portal-grid">
+<div class="portal-grid" [class.mobile]="responsiveService.isMobile()">
   <!-- seccion 1: registrar nueva venta -->
   <section class="module-card">
     <h2>Registrar Nueva Venta</h2>
     <p class="subtitle">ingresa el monto y la fecha de tu venta realizada</p>
 
-    <form class="sale-form" (ngSubmit)="registrarVenta()">
+    <form class="sale-form" [class.mobile]="responsiveService.isMobile()" (ngSubmit)="registrarVenta()">
       <div class="form-group">
         <label for="vMonto">monto de la venta ($)</label>
         <input 
@@ -57,7 +57,7 @@
     <p class="subtitle">revisa tus ventas acumuladas y la comisión ganada en el periodo</p>
 
     <!-- filtro de fechas -->
-    <form class="filter-form" (ngSubmit)="cargarComision()">
+    <form class="filter-form" [class.mobile]="responsiveService.isMobile()" (ngSubmit)="cargarComision()">
       <div class="form-group">
         <label for="fInicio">desde</label>
         <input 
@@ -83,7 +83,7 @@
     </form>
 
     <!-- tarjetas con resumen de comisiones -->
-    <div class="summary-cards">
+    <div class="summary-cards" [class.mobile]="responsiveService.isMobile()">
       <div class="summary-card">
         <span class="label">total vendido</span>
         <span class="value">${{ (miComision()?.total_vendido || 0) | number:'1.2-2' }}</span>
@@ -102,7 +102,7 @@
   </section>
 </div>
 
-<!-- seccion 3: tabla con historial de ventas -->
+<!-- seccion 3: tabla o tarjetas con historial de ventas -->
 <section class="module-card">
   <h2>Historial de Mis Ventas</h2>
   <p class="subtitle">listado de todas las ventas que has registrado en la plataforma</p>
@@ -110,25 +110,41 @@
   @if (misVentas().length === 0) {
     <p class="empty-state">aun no has registrado ninguna venta.</p>
   } @else {
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>id</th>
-            <th>fecha</th>
-            <th class="text-right">monto</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (venta of misVentas(); track venta.id) {
+    @if (!responsiveService.isMobile()) {
+      <div class="table-container">
+        <table>
+          <thead>
             <tr>
-              <td>#{{ venta.id }}</td>
-              <td>{{ venta.fecha | date:'yyyy-MM-dd HH:mm' }}</td>
-              <td class="text-right font-bold">${{ venta.monto | number:'1.2-2' }}</td>
+              <th>id</th>
+              <th>fecha</th>
+              <th class="text-right">monto</th>
             </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            @for (venta of misVentas(); track venta.id) {
+              <tr>
+                <td>#{{ venta.id }}</td>
+                <td>{{ venta.fecha | date:'yyyy-MM-dd HH:mm' }}</td>
+                <td class="text-right font-bold">${{ venta.monto | number:'1.2-2' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <!-- vista de tarjetas para dispositivos moviles -->
+      <div class="cards-list">
+        @for (venta of misVentas(); track venta.id) {
+          <article class="sale-card">
+            <div class="sale-card-header">
+              <strong>venta #{{ venta.id }}</strong>
+              <span class="badge">{{ venta.fecha | date:'yyyy-MM-dd' }}</span>
+            </div>
+            <p><strong>hora:</strong> {{ venta.fecha | date:'HH:mm' }}</p>
+            <p class="font-bold text-success"><strong>monto:</strong> ${{ venta.monto | number:'1.2-2' }}</p>
+          </article>
+        }
+      </div>
+    }
   }
 </section>

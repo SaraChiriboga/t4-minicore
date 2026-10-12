@@ -7,3 +7,4 @@ export interface Comision {
   porcentaje_comision: number;
   comision_calculada: number;
 }
+

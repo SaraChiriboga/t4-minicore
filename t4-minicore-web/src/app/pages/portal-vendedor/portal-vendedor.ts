@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
 import { ComisionesService } from '../../core/services/comisiones.service';
+import { ResponsiveService } from '../../core/services/responsive.service';
 import { Venta } from '../../shared/models/venta.model';
 import { Comision } from '../../shared/models/comision.model';
 
@@ -16,6 +17,7 @@ import { Comision } from '../../shared/models/comision.model';
 export class PortalVendedor implements OnInit {
   private authService = inject(AuthService);
   private comisionesService = inject(ComisionesService);
+  public responsiveService = inject(ResponsiveService);
 
   // datos del usuario logueado
   userName = this.authService.getUserName();
@@ -127,3 +129,4 @@ export class PortalVendedor implements OnInit {
     this.authService.logout();
   }
 }
+

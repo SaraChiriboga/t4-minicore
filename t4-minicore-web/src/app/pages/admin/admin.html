@@ -1,5 +1,5 @@
-<!-- barra superior de navegacion -->
-<header class="top-bar">
+<!-- barra superior con saludo y boton de salir -->
+<header class="top-bar" [class.mobile]="responsiveService.isMobile()">
   <div>
     <h1>Panel de Administración</h1>
     <p class="user-greeting">conectado como: <span>{{ userName }}</span> (administrador)</p>
@@ -8,7 +8,7 @@
 </header>
 
 <!-- pestañas para alternar entre modulos -->
-<nav class="nav-tabs">
+<nav class="nav-tabs" [class.mobile]="responsiveService.isMobile()">
   <button 
     type="button" 
     class="tab-btn" 
@@ -47,7 +47,7 @@
     <p class="subtitle">filtra por rango de fechas para evaluar las comisiones de todos los vendedores</p>
 
     <!-- formulario de fechas -->
-    <form class="filter-form" (ngSubmit)="cargarReporte()">
+    <form class="filter-form" [class.mobile]="responsiveService.isMobile()" (ngSubmit)="cargarReporte()">
       <div class="form-group">
         <label for="fechaInicio">fecha inicio</label>
         <input 
@@ -75,7 +75,7 @@
     </form>
 
     <!-- tarjetas con resumen numerico -->
-    <div class="summary-cards">
+    <div class="summary-cards" [class.mobile]="responsiveService.isMobile()">
       <div class="summary-card">
         <span class="label">total vendido en el periodo</span>
         <span class="value">${{ totalVentas() | number:'1.2-2' }}</span>
@@ -86,44 +86,61 @@
       </div>
     </div>
 
-    <!-- tabla de resultados -->
+    <!-- tabla o vista movil de resultados -->
     @if (comisiones().length === 0) {
       <p class="empty-state">no se encontraron ventas en el periodo seleccionado.</p>
     } @else {
-      <div class="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>vendedor</th>
-              <th>identificación</th>
-              <th class="text-right">total vendido</th>
-              <th class="text-center">% comisión</th>
-              <th class="text-right">comisión calculada</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (c of comisiones(); track c.vendedor_id) {
+      @if (!responsiveService.isMobile()) {
+        <div class="table-container">
+          <table>
+            <thead>
               <tr>
-                <td class="font-bold">{{ c.nombre }}</td>
-                <td>{{ c.identificacion || '-' }}</td>
-                <td class="text-right">${{ c.total_vendido | number:'1.2-2' }}</td>
-                <td class="text-center badge-cell">
-                  <span class="badge">{{ c.porcentaje_comision }}%</span>
-                </td>
-                <td class="text-right text-success font-bold">${{ c.comision_calculada | number:'1.2-2' }}</td>
+                <th>vendedor</th>
+                <th>identificación</th>
+                <th class="text-right">total vendido</th>
+                <th class="text-center">% comisión</th>
+                <th class="text-right">comisión calculada</th>
               </tr>
-            }
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colspan="2">TOTAL GENERAL</td>
-              <td class="text-right">${{ totalVentas() | number:'1.2-2' }}</td>
-              <td>-</td>
-              <td class="text-right text-success font-bold">${{ totalComisiones() | number:'1.2-2' }}</td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              @for (c of comisiones(); track c.vendedor_id) {
+                <tr>
+                  <td class="font-bold">{{ c.nombre }}</td>
+                  <td>{{ c.identificacion || '-' }}</td>
+                  <td class="text-right">${{ c.total_vendido | number:'1.2-2' }}</td>
+                  <td class="text-center badge-cell">
+                    <span class="badge">{{ c.porcentaje_comision }}%</span>
+                  </td>
+                  <td class="text-right text-success font-bold">${{ c.comision_calculada | number:'1.2-2' }}</td>
+                </tr>
+              }
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="2">TOTAL GENERAL</td>
+                <td class="text-right">${{ totalVentas() | number:'1.2-2' }}</td>
+                <td>-</td>
+                <td class="text-right text-success font-bold">${{ totalComisiones() | number:'1.2-2' }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      } @else {
+        <!-- vista en tarjetas para celulares -->
+        <div class="cards-list">
+          @for (c of comisiones(); track c.vendedor_id) {
+            <article class="item-card">
+              <div class="item-card-header">
+                <strong>{{ c.nombre }}</strong>
+                <span class="badge">{{ c.porcentaje_comision }}%</span>
+              </div>
+              <p><strong>identificación:</strong> {{ c.identificacion || '-' }}</p>
+              <p><strong>total vendido:</strong> ${{ c.total_vendido | number:'1.2-2' }}</p>
+              <p class="text-success font-bold"><strong>comisión ganada:</strong> ${{ c.comision_calculada | number:'1.2-2' }}</p>
+            </article>
+          }
+        </div>
+      }
     }
   </section>
 }
@@ -132,7 +149,7 @@
 @if (activeTab() === 'vendedores') {
   <section class="module-card">
     <h2>{{ vendedorEditandoId ? 'Editar Vendedor' : 'Registrar Nuevo Vendedor' }}</h2>
-    <form class="crud-form" (ngSubmit)="guardarVendedor()">
+    <form class="crud-form" [class.mobile]="responsiveService.isMobile()" (ngSubmit)="guardarVendedor()">
       <div class="form-group">
         <label for="vNombre">nombre completo</label>
         <input 
@@ -162,31 +179,54 @@
     </form>
 
     <h3 class="section-title">Listado de Vendedores</h3>
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>id</th>
-            <th>nombre</th>
-            <th>identificación</th>
-            <th class="text-right">acciones</th>
-          </tr>
-        </thead>
-        <tbody>
+    @if (vendedores().length === 0) {
+      <p class="empty-state">no hay vendedores registrados.</p>
+    } @else {
+      @if (!responsiveService.isMobile()) {
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>id</th>
+                <th>nombre</th>
+                <th>identificación</th>
+                <th class="text-right">acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (v of vendedores(); track v.id) {
+                <tr>
+                  <td>{{ v.id }}</td>
+                  <td class="font-bold">{{ v.nombre }}</td>
+                  <td>{{ v.identificacion }}</td>
+                  <td class="text-right action-buttons">
+                    <button type="button" class="btn-sm btn-edit" (click)="editarVendedor(v)">editar</button>
+                    <button type="button" class="btn-sm btn-delete" (click)="eliminarVendedor(v.id)">eliminar</button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <!-- vista en tarjetas para celulares -->
+        <div class="cards-list">
           @for (v of vendedores(); track v.id) {
-            <tr>
-              <td>{{ v.id }}</td>
-              <td class="font-bold">{{ v.nombre }}</td>
-              <td>{{ v.identificacion }}</td>
-              <td class="text-right action-buttons">
+            <article class="item-card">
+              <div class="item-card-header">
+                <strong>{{ v.nombre }}</strong>
+                <span class="badge">#{{ v.id }}</span>
+              </div>
+              <p><strong>identificación:</strong> {{ v.identificacion }}</p>
+              <div class="card-actions">
                 <button type="button" class="btn-sm btn-edit" (click)="editarVendedor(v)">editar</button>
                 <button type="button" class="btn-sm btn-delete" (click)="eliminarVendedor(v.id)">eliminar</button>
-              </td>
-            </tr>
+              </div>
+            </article>
           }
-        </tbody>
-      </table>
-    </div>
+        </div>
+      }
+    }
   </section>
 }
 
@@ -194,7 +234,7 @@
 @if (activeTab() === 'reglas') {
   <section class="module-card">
     <h2>{{ reglaEditandoId ? 'Editar Regla de Comisión' : 'Nueva Regla Escalonada' }}</h2>
-    <form class="crud-form" (ngSubmit)="guardarRegla()">
+    <form class="crud-form" [class.mobile]="responsiveService.isMobile()" (ngSubmit)="guardarRegla()">
       <div class="form-group">
         <label for="rMonto">monto mínimo ($)</label>
         <input 
@@ -226,30 +266,53 @@
     </form>
 
     <h3 class="section-title">Escalones de Comisión Configurados</h3>
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>id</th>
-            <th>monto mínimo</th>
-            <th>porcentaje aplicado</th>
-            <th class="text-right">acciones</th>
-          </tr>
-        </thead>
-        <tbody>
+    @if (reglas().length === 0) {
+      <p class="empty-state">no hay reglas de comision configuradas.</p>
+    } @else {
+      @if (!responsiveService.isMobile()) {
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>id</th>
+                <th>monto mínimo</th>
+                <th>porcentaje aplicado</th>
+                <th class="text-right">acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (r of reglas(); track r.id) {
+                <tr>
+                  <td>{{ r.id }}</td>
+                  <td class="font-bold">${{ r.monto_minimo | number:'1.2-2' }}</td>
+                  <td><span class="badge">{{ r.porcentaje_comision }}%</span></td>
+                  <td class="text-right action-buttons">
+                    <button type="button" class="btn-sm btn-edit" (click)="editarRegla(r)">editar</button>
+                    <button type="button" class="btn-sm btn-delete" (click)="eliminarRegla(r.id)">eliminar</button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <!-- vista en tarjetas para celulares -->
+        <div class="cards-list">
           @for (r of reglas(); track r.id) {
-            <tr>
-              <td>{{ r.id }}</td>
-              <td class="font-bold">${{ r.monto_minimo | number:'1.2-2' }}</td>
-              <td><span class="badge">{{ r.porcentaje_comision }}%</span></td>
-              <td class="text-right action-buttons">
+            <article class="item-card">
+              <div class="item-card-header">
+                <strong>regla #{{ r.id }}</strong>
+                <span class="badge">{{ r.porcentaje_comision }}%</span>
+              </div>
+              <p><strong>monto mínimo:</strong> ${{ r.monto_minimo | number:'1.2-2' }}</p>
+              <div class="card-actions">
                 <button type="button" class="btn-sm btn-edit" (click)="editarRegla(r)">editar</button>
                 <button type="button" class="btn-sm btn-delete" (click)="eliminarRegla(r.id)">eliminar</button>
-              </td>
-            </tr>
+              </div>
+            </article>
           }
-        </tbody>
-      </table>
-    </div>
+        </div>
+      }
+    }
   </section>
 }

@@ -5,6 +5,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { VendedorService } from '../../core/services/vendedor.service';
 import { ReglaService } from '../../core/services/regla.service';
 import { ComisionesService } from '../../core/services/comisiones.service';
+import { ResponsiveService } from '../../core/services/responsive.service';
 import { Vendedor } from '../../shared/models/vendedor.model';
 import { Regla } from '../../shared/models/regla.model';
 import { Comision } from '../../shared/models/comision.model';
@@ -21,6 +22,7 @@ export class Admin implements OnInit {
   private vendedorService = inject(VendedorService);
   private reglaService = inject(ReglaService);
   private comisionesService = inject(ComisionesService);
+  public responsiveService = inject(ResponsiveService);
 
   // pestaña activa en el panel
   activeTab = signal<'comisiones' | 'vendedores' | 'reglas'>('comisiones');
@@ -217,3 +219,4 @@ export class Admin implements OnInit {
     this.authService.logout();
   }
 }
+

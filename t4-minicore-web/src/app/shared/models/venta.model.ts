@@ -5,3 +5,4 @@ export interface Venta {
   fecha: string;
   vendedor_id: number;
 }
+

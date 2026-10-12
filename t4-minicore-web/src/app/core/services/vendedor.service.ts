@@ -30,3 +30,4 @@ export class VendedorService {
     return this.http.delete<{ message: string }>(`${this.apiUrl}/${id}`);
   }
 }
+

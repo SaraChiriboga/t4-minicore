@@ -4,3 +4,4 @@ export interface Vendedor {
   nombre: string;
   identificacion: string;
 }
+

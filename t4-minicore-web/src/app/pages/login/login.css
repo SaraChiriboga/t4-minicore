@@ -1,4 +1,4 @@
-/* toda la pantalla del login (centra la tarjeta al medio) */
+/* contenedor principal centrado en pantalla con tema claro */
 :host {
   display: flex;
   justify-content: center;
@@ -6,74 +6,93 @@
   min-height: 100dvh;
   padding: 1rem;
   box-sizing: border-box;
-  background-color: #0E131F;
+  background-color: #f1f5f9;
+  color: #1e293b;
 }
 
-/* la tarjeta que contiene el formulario */
+/* tarjeta del formulario con fondo blanco */
 .login-container {
   width: 100%;
   max-width: 400px;
-  background-color: #161D2D;
+  background-color: #ffffff;
   padding: 2rem;
   border-radius: 8px;
   box-sizing: border-box;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
 }
 
-/* formulario organizado hacia abajo */
+/* ajuste para pantallas de celular */
+.login-container.mobile {
+  padding: 1.25rem;
+  border-radius: 6px;
+}
+
+/* organizacion vertical del formulario */
 form {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
 }
 
-/* titulo de iniciar sesion */
+/* titulo de inicio de sesion */
 form h1 {
   margin: 0 0 0.5rem 0;
   text-align: center;
-  color: #ECE8DF;
+  color: #0f172a;
+  font-size: 1.5rem;
 }
 
 /* etiquetas de los campos */
 form label {
-  color: #ECE8DF;
+  color: #475569;
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
-/* cada grupo con su texto arriba y su input abajo */
+/* agrupacion de etiqueta e input */
 form div {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
 }
 
-/* campos donde escribes el correo y la contrasena */
+/* campos de texto con fondo claro */
 input {
   padding: 0.65rem 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
   font-size: 1rem;
+  background-color: #ffffff;
+  color: #1e293b;
+  outline: none;
 }
 
-/* boton principal de iniciar sesion */
+input:focus {
+  border-color: #0d9488;
+}
+
+/* boton principal de ingresar */
 button[type="submit"] {
   padding: 0.75rem;
-  background-color: #2DD4BF;
-  color: #0E131F;
+  background-color: #0d9488;
+  color: #ffffff;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
   font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
   transition: opacity 0.2s;
 }
 
-/* efecto cuando pasas el mouse por encima del boton */
 button[type="submit"]:hover {
-  opacity: 0.85;
+  opacity: 0.9;
 }
 
-/* mensaje de error cuando fallan las credenciales */
+/* aviso de error cuando fallan credenciales */
 .error-message {
   margin-top: 1rem;
-  color: #FF6B81;
+  color: #dc2626;
   text-align: center;
   font-size: 0.9rem;
 }

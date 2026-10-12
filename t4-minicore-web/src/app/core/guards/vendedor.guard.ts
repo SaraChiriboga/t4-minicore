@@ -15,3 +15,4 @@ export const vendedorGuard: CanActivateFn = () => {
   // si no tiene permiso lo mandamos al login
   return router.parseUrl('/login');
 };
+

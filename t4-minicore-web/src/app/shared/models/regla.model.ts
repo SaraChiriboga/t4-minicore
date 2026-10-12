@@ -4,3 +4,4 @@ export interface Regla {
   monto_minimo: number;
   porcentaje_comision: number;
 }
+
