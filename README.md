@@ -1,7 +1,4 @@
 # T4-Minicore: Sistema de Cálculo de Comisiones por Ventas (MVC + RBAC)
-
-<div align="center">
-
 ![Lucky Framework](https://img.shields.io/badge/Backend-Lucky%20Framework%201.5-000000?style=for-the-badge&logo=crystal&logoColor=white)
 ![Crystal Language](https://img.shields.io/badge/Language-Crystal-222222?style=for-the-badge&logo=crystal&logoColor=white)
 ![Angular](https://img.shields.io/badge/Frontend-Angular%2022-DD0031?style=for-the-badge&logo=angular&logoColor=white)
@@ -13,8 +10,6 @@
 
 **Plataforma web empresarial para el registro transaccional de ventas y liquidación escalonada de comisiones comerciales.**  
 Construida bajo el patrón arquitectónico **Modelo-Vista-Controlador (MVC)** desacoplado con **Control de Acceso Basado en Roles (RBAC)**.
-
-</div>
 
 ---
 
