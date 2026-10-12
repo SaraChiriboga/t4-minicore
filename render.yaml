@@ -19,6 +19,8 @@ services:
         generateValue: true
       - key: SEND_GRID_KEY
         value: unused
+      - key: APP_DOMAIN
+        value: https://t4-minicore-api.onrender.com
 
   # Frontend SPA en Angular
   - type: web

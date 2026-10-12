@@ -27,6 +27,7 @@ RUN chmod +x docker/start.sh bin/app bin/tasks
 ENV LUCKY_ENV=production
 ENV PORT=3000
 ENV SEND_GRID_KEY=unused
+ENV APP_DOMAIN=http://localhost:3000
 
 EXPOSE 3000
 
