@@ -3,7 +3,7 @@ class Vendedor < BaseModel
     column nombre : String
     column identificacion : String
 
-    # relación inversa: Un vendedor tiene muchas ventas
     has_many ventas : Venta
+    has_one user : User?
   end
 end

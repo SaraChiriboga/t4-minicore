@@ -4,12 +4,13 @@ class UserSerializer < BaseSerializer
 
   def render
     {
-    id: @user.id,  
-    email: @user.email,
-    role: @user.role.to_s,
-    name: @user.name,
-    last_name: @user.last_name,
-    phone: @user.phone
-  }
+      id:          @user.id,
+      email:       @user.email,
+      role:        @user.role.to_s,
+      name:        @user.name,
+      last_name:   @user.last_name,
+      phone:       @user.phone,
+      vendedor_id: @user.vendedor_id,
+    }
   end
 end
