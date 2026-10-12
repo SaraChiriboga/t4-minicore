@@ -41,21 +41,21 @@ El sistema cuenta con **seguridad de doble capa**: protección perimetral en cli
 
 ## ✨ Características del Proyecto
 
-[x] **Autenticación Robusta:** Flujo de inicio de sesión con generación de tokens JWT firmados ([`create.cr`](forgeworks_api/src/actions/api/sign_ins/create.cr) y [`auth.service.ts`](forgeworks-web/src/app/core/services/auth.service.ts)).
+[x] **Autenticación Robusta:** Flujo de inicio de sesión con generación de tokens JWT firmados ([`create.cr`](t4-minicore-api/src/actions/api/sign_ins/create.cr) y [`auth.service.ts`](t4-minicore-web/src/app/core/services/auth.service.ts)).
 
 [x] **Rutas Protegidas (Doble Capa):**
-  - **Frontend:** [`authGuard`](forgeworks-web/src/app/core/guards/auth.guard.ts) y [`adminGuard`](forgeworks-web/src/app/core/guards/admin.guard.ts) impiden el acceso a rutas sin token o sin rol de administrador.
-  - **Backend:** `Api::Auth::RequireAuthToken` en [`api_action.cr`](forgeworks_api/src/actions/api_action.cr) rechaza solicitudes no autorizadas en cada endpoint del CRUD.
+  - **Frontend:** [`authGuard`](t4-minicore-web/src/app/core/guards/auth.guard.ts) y [`adminGuard`](t4-minicore-web/src/app/core/guards/admin.guard.ts) impiden el acceso a rutas sin token o sin rol de administrador.
+  - **Backend:** `Api::Auth::RequireAuthToken` en [`api_action.cr`](t4-minicore-api/src/actions/api_action.cr) rechaza solicitudes no autorizadas en cada endpoint del CRUD.
 
 [x] **CRUD Completo de Usuarios:**
-  - **Create (Crear):** Formulario para registrar nuevos usuarios con validación de datos ([`users.ts`](forgeworks-web/src/app/pages/users/users.ts) y [`create.cr`](forgeworks_api/src/actions/api/users/create.cr)).
-  - **Read (Leer):** Listado general reactivo y visualización individual de detalles con modal SweetAlert2 ([`index.cr`](forgeworks_api/src/actions/api/users/index.cr) y [`read.cr`](forgeworks_api/src/actions/api/users/read.cr)).
-  - **Update (Actualizar):** Modo de edición dinámico reutilizando el formulario de entrada ([`update.cr`](forgeworks_api/src/actions/api/users/update.cr)).
-  - **Delete (Eliminar):** Eliminación controlada de registros en base de datos ([`delete.cr`](forgeworks_api/src/actions/api/users/delete.cr)).
+  - **Create (Crear):** Formulario para registrar nuevos usuarios con validación de datos ([`users.ts`](t4-minicore-web/src/app/pages/users/users.ts) y [`create.cr`](t4-minicore-api/src/actions/api/users/create.cr)).
+  - **Read (Leer):** Listado general reactivo y visualización individual de detalles con modal SweetAlert2 ([`index.cr`](t4-minicore-api/src/actions/api/users/index.cr) y [`read.cr`](t4-minicore-api/src/actions/api/users/read.cr)).
+  - **Update (Actualizar):** Modo de edición dinámico reutilizando el formulario de entrada ([`update.cr`](t4-minicore-api/src/actions/api/users/update.cr)).
+  - **Delete (Eliminar):** Eliminación controlada de registros en base de datos ([`delete.cr`](t4-minicore-api/src/actions/api/users/delete.cr)).
 
-[x] **Control de Acceso Basado en Roles (RBAC):** Separación de privilegios entre usuarios regulares y administradores ([`user.cr`](forgeworks_api/src/models/user.cr)).
+[x] **Control de Acceso Basado en Roles (RBAC):** Separación de privilegios entre usuarios regulares y administradores ([`user.cr`](t4-minicore-api/src/models/user.cr)).
 
-[x] **Encriptación de Contraseñas:** Algoritmo de hashing seguro (Bcrypt) mediante `Authentic` en [`sign_up_user.cr`](forgeworks_api/src/operations/sign_up_user.cr), evitando el almacenamiento de contraseñas en texto plano.
+[x] **Encriptación de Contraseñas:** Algoritmo de hashing seguro (Bcrypt) mediante `Authentic` en [`sign_up_user.cr`](t4-minicore-api/src/operations/sign_up_user.cr), evitando el almacenamiento de contraseñas en texto plano.
 
 ---
 
@@ -65,9 +65,9 @@ El sistema implementa de forma rigurosa la separación de responsabilidades del 
 
 | Capa MVC | Tecnología | Archivos / Componentes Clave | Responsabilidad en la Solución |
 | :--- | :--- | :--- | :--- |
-| **🧠 Modelo (Model)** | **Avram ORM & Operations** *(Crystal)* | • [`user.cr`](forgeworks_api/src/models/user.cr)<br>• [`user_token.cr`](forgeworks_api/src/models/user_token.cr)<br>• [`sign_up_user.cr`](forgeworks_api/src/operations/sign_up_user.cr)<br>• [`update_user.cr`](forgeworks_api/src/operations/update_user.cr) | Define las entidades, tipos de datos, interacción con PostgreSQL, reglas de negocio y el hashing seguro de passwords con Bcrypt. |
-| **👁️ Vista (View)** | **Angular SPA & Lucky Serializers** | • Login: [`login.ts`](forgeworks-web/src/app/pages/login/login.ts) / [`login.html`](forgeworks-web/src/app/pages/login/login.html)<br>• Users CRUD: [`users.ts`](forgeworks-web/src/app/pages/users/users.ts) / [`users.html`](forgeworks-web/src/app/pages/users/users.html)<br>• [`user_serializer.cr`](forgeworks_api/src/serializers/user_serializer.cr) | Renderiza la interfaz gráfica reactiva para el usuario y formatea las respuestas JSON de la API ocultando datos sensibles. |
-| **🎮 Controlador (Controller)** | **Lucky Actions** *(Crystal)* | • [`api_action.cr`](forgeworks_api/src/actions/api_action.cr)<br>• [`sign_ins/create.cr`](forgeworks_api/src/actions/api/sign_ins/create.cr)<br>• Users Actions: [`index.cr`](forgeworks_api/src/actions/api/users/index.cr) \| [`create.cr`](forgeworks_api/src/actions/api/users/create.cr) \| [`read.cr`](forgeworks_api/src/actions/api/users/read.cr) \| [`update.cr`](forgeworks_api/src/actions/api/users/update.cr) \| [`delete.cr`](forgeworks_api/src/actions/api/users/delete.cr) | Recibe las peticiones HTTP, verifica tokens JWT, aplica filtros de autorización (`require_admin`) y coordina modelos y vistas. |
+| **🧠 Modelo (Model)** | **Avram ORM & Operations** *(Crystal)* | • [`user.cr`](t4-minicore-api/src/models/user.cr)<br>• [`user_token.cr`](t4-minicore-api/src/models/user_token.cr)<br>• [`sign_up_user.cr`](t4-minicore-api/src/operations/sign_up_user.cr)<br>• [`update_user.cr`](t4-minicore-api/src/operations/update_user.cr) | Define las entidades, tipos de datos, interacción con PostgreSQL, reglas de negocio y el hashing seguro de passwords con Bcrypt. |
+| **👁️ Vista (View)** | **Angular SPA & Lucky Serializers** | • Login: [`login.ts`](t4-minicore-web/src/app/pages/login/login.ts) / [`login.html`](t4-minicore-web/src/app/pages/login/login.html)<br>• Users CRUD: [`users.ts`](t4-minicore-web/src/app/pages/users/users.ts) / [`users.html`](t4-minicore-web/src/app/pages/users/users.html)<br>• [`user_serializer.cr`](t4-minicore-api/src/serializers/user_serializer.cr) | Renderiza la interfaz gráfica reactiva para el usuario y formatea las respuestas JSON de la API ocultando datos sensibles. |
+| **🎮 Controlador (Controller)** | **Lucky Actions** *(Crystal)* | • [`api_action.cr`](t4-minicore-api/src/actions/api_action.cr)<br>• [`sign_ins/create.cr`](t4-minicore-api/src/actions/api/sign_ins/create.cr)<br>• Users Actions: [`index.cr`](t4-minicore-api/src/actions/api/users/index.cr) \| [`create.cr`](t4-minicore-api/src/actions/api/users/create.cr) \| [`read.cr`](t4-minicore-api/src/actions/api/users/read.cr) \| [`update.cr`](t4-minicore-api/src/actions/api/users/update.cr) \| [`delete.cr`](t4-minicore-api/src/actions/api/users/delete.cr) | Recibe las peticiones HTTP, verifica tokens JWT, aplica filtros de autorización (`require_admin`) y coordina modelos y vistas. |
 
 ### El Flujo de una Petición Protegida
 
@@ -110,13 +110,13 @@ sequenceDiagram
 
 En este proyecto se utilizó **Bcrypt**, el estándar de la industria recomendado sobre algoritmos obsoletos como MD5 o SHA-1:
 
-1. **Hashing Unidireccional con Salt:** Al registrar un usuario en [`sign_up_user.cr`](forgeworks_api/src/operations/sign_up_user.cr), el shard `Authentic` ejecuta:
+1. **Hashing Unidireccional con Salt:** Al registrar un usuario en [`sign_up_user.cr`](t4-minicore-api/src/operations/sign_up_user.cr), el shard `Authentic` ejecuta:
    ```crystal
    Authentic.copy_and_encrypt(password, to: encrypted_password)
    ```
-2. **Protección en Base de Datos:** En el modelo [`user.cr`](forgeworks_api/src/models/user.cr), la columna en PostgreSQL se define como `column encrypted_password : String`. El valor original en texto plano nunca se persiste.
-3. **Serialización Segura:** En [`user_serializer.cr`](forgeworks_api/src/serializers/user_serializer.cr), el campo `encrypted_password` está estrictamente excluido para garantizar que ningún hash viaje hacia el cliente.
-4. **Verificación en Login:** En [`sign_in_user.cr`](forgeworks_api/src/operations/sign_in_user.cr), la contraseña ingresada se procesa contra el salt y hash almacenados; si coinciden, se emite un JSON Web Token (JWT) mediante [`user_token.cr`](forgeworks_api/src/models/user_token.cr).
+2. **Protección en Base de Datos:** En el modelo [`user.cr`](t4-minicore-api/src/models/user.cr), la columna en PostgreSQL se define como `column encrypted_password : String`. El valor original en texto plano nunca se persiste.
+3. **Serialización Segura:** En [`user_serializer.cr`](t4-minicore-api/src/serializers/user_serializer.cr), el campo `encrypted_password` está estrictamente excluido para garantizar que ningún hash viaje hacia el cliente.
+4. **Verificación en Login:** En [`sign_in_user.cr`](t4-minicore-api/src/operations/sign_in_user.cr), la contraseña ingresada se procesa contra el salt y hash almacenados; si coinciden, se emite un JSON Web Token (JWT) mediante [`user_token.cr`](t4-minicore-api/src/models/user_token.cr).
 
 ---
 
@@ -144,9 +144,9 @@ En este proyecto se utilizó **Bcrypt**, el estándar de la industria recomendad
 ## 📁 Estructura del Repositorio
 
 ```
-forgeworks/
+t4-minicore/
 │
-├── forgeworks_api/                      # ⚙️ BACKEND (Lucky Framework MVC)
+├── t4-minicore-api/                     # ⚙️ BACKEND (Lucky Framework MVC)
 │   ├── config/                          # Configuración de base de datos y servidor
 │   ├── db/
 │   │   ├── migrations/                  # Migraciones de base de datos
@@ -167,7 +167,7 @@ forgeworks/
 │       └── serializers/                 # 👁️ VISTAS JSON
 │           └── user_serializer.cr       # Formateo de respuesta sin campos sensibles
 │
-├── forgeworks-web/                      # 🎨 FRONTEND (Angular)
+├── t4-minicore-web/                      # 🎨 FRONTEND (Angular)
 │   └── src/app/
 │       ├── core/
 │       │   ├── guards/                  # 🛡️ Protección de Rutas
@@ -198,17 +198,17 @@ forgeworks/
 
 ### Paso 1: Clonar el repositorio
 ```bash
-git clone https://github.com/tu-usuario/forgeworks.git
-cd forgeworks
+git clone https://github.com/tu-usuario/t4-minicore.git
+cd t4-minicore
 ```
 
 ---
 
-### Paso 2: Configurar y Levantar el Backend (`forgeworks_api`)
+### Paso 2: Configurar y Levantar el Backend (`t4-minicore-api`)
 
 1. Navegar a la carpeta del backend:
    ```bash
-   cd forgeworks_api
+   cd t4-minicore-api
    ```
 2. Instalar dependencias de Crystal:
    ```bash
@@ -231,16 +231,16 @@ cd forgeworks
    ```bash
    lucky dev
    # o alternativamente:
-   crystal run src/forgeworks_api.cr
+   crystal run src/t4_minicore_api.cr
    ```
 
 ---
 
-### Paso 3: Configurar y Levantar el Frontend (`forgeworks-web`)
+### Paso 3: Configurar y Levantar el Frontend (`t4-minicore-web`)
 
 1. Abrir una nueva terminal y navegar a la carpeta web:
    ```bash
-   cd forgeworks-web
+   cd t4-minicore-web
    ```
 2. Instalar paquetes de npm:
    ```bash
@@ -263,7 +263,7 @@ Para facilitar la evaluación de la entrega y las pruebas del sistema, puede uti
 
 | Rol | Correo Electrónico | Contraseña | Permisos / Acceso |
 | :--- | :--- | :--- | :--- |
-| **Administrador** | `admin@forgeworks.com` | `password123` | Acceso completo al Login y al CRUD protegido (`/users`) |
+| **Administrador** | `admin@t4-minicore.com` | `password123` | Acceso completo al Login y al CRUD protegido (`/users`) |
 
 ---
 <div align="center">
