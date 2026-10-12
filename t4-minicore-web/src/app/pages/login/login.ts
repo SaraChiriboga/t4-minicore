@@ -22,9 +22,13 @@ export class Login implements OnInit {
 
   ngOnInit() {
 
-    // si ya tiene sesion activa Y es admin, puede ingresar al CRUD
-    if (this.authService.isLoggedIn() && this.authService.isAdmin()) {
-      this.router.navigate(['/users']);
+    // si ya tiene sesion activa lo redirigimos segun su rol
+    if (this.authService.isLoggedIn()) {
+      if (this.authService.isAdmin()) {
+        this.router.navigate(['/admin']);
+      } else if (this.authService.isVendedor()) {
+        this.router.navigate(['/portal-vendedor']);
+      }
     }
   }
 
@@ -33,11 +37,13 @@ export class Login implements OnInit {
 
     this.authService.login(this.email, this.password).subscribe({
       next: () => {
-        if(this.authService.isAdmin()){
-          // login exitoso: el servicio ya guardó el token en localStorage
-          this.router.navigate(['/users']);
-        } else{
-          this.errorMessage.set('Acceso denegado: Permisos insuficientes :(')
+        // redirigimos segun el rol del usuario autenticado
+        if (this.authService.isAdmin()) {
+          this.router.navigate(['/admin']);
+        } else if (this.authService.isVendedor()) {
+          this.router.navigate(['/portal-vendedor']);
+        } else {
+          this.errorMessage.set('acceso denegado: este usuario no tiene un perfil o vendedor asignado');
         }
       },
       error: (err) => {

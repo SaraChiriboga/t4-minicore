@@ -1,0 +1,134 @@
+<!-- barra superior -->
+<header class="top-bar">
+  <div>
+    <h1>Portal del Vendedor</h1>
+    <p class="user-greeting">conectado como: <span>{{ userName }}</span> (vendedor #{{ vendedorId }})</p>
+  </div>
+  <button type="button" class="btn-logout" (click)="logout()">cerrar sesión</button>
+</header>
+
+<!-- avisos y notificaciones -->
+@if (mensaje()) {
+  <div class="alert success">{{ mensaje() }}</div>
+}
+@if (error()) {
+  <div class="alert danger">{{ error() }}</div>
+}
+
+<div class="portal-grid">
+  <!-- seccion 1: registrar nueva venta -->
+  <section class="module-card">
+    <h2>Registrar Nueva Venta</h2>
+    <p class="subtitle">ingresa el monto y la fecha de tu venta realizada</p>
+
+    <form class="sale-form" (ngSubmit)="registrarVenta()">
+      <div class="form-group">
+        <label for="vMonto">monto de la venta ($)</label>
+        <input 
+          id="vMonto" 
+          type="number" 
+          step="0.01" 
+          min="0.01"
+          name="vMonto" 
+          placeholder="ej. 1250.50" 
+          [(ngModel)]="nuevaVenta.monto" 
+          required />
+      </div>
+
+      <div class="form-group">
+        <label for="vFecha">fecha de la venta</label>
+        <input 
+          id="vFecha" 
+          type="date" 
+          name="vFecha" 
+          [(ngModel)]="nuevaVenta.fecha" 
+          required />
+      </div>
+
+      <button type="submit" [disabled]="loading()">
+        {{ loading() ? 'guardando...' : 'guardar venta' }}
+      </button>
+    </form>
+  </section>
+
+  <!-- seccion 2: mis comisiones ganadas y resumen -->
+  <section class="module-card">
+    <h2>Mis Comisiones</h2>
+    <p class="subtitle">revisa tus ventas acumuladas y la comisión ganada en el periodo</p>
+
+    <!-- filtro de fechas -->
+    <form class="filter-form" (ngSubmit)="cargarComision()">
+      <div class="form-group">
+        <label for="fInicio">desde</label>
+        <input 
+          id="fInicio" 
+          type="date" 
+          name="fInicio" 
+          [(ngModel)]="fechaInicio" />
+      </div>
+
+      <div class="form-group">
+        <label for="fFin">hasta</label>
+        <input 
+          id="fFin" 
+          type="date" 
+          name="fFin" 
+          [(ngModel)]="fechaFin" />
+      </div>
+
+      <div class="filter-buttons">
+        <button type="submit">filtrar</button>
+        <button type="button" class="btn-secondary" (click)="limpiarFiltro()">limpiar</button>
+      </div>
+    </form>
+
+    <!-- tarjetas con resumen de comisiones -->
+    <div class="summary-cards">
+      <div class="summary-card">
+        <span class="label">total vendido</span>
+        <span class="value">${{ (miComision()?.total_vendido || 0) | number:'1.2-2' }}</span>
+      </div>
+
+      <div class="summary-card">
+        <span class="label">% de comisión</span>
+        <span class="value">{{ miComision()?.porcentaje_comision || 0 }}%</span>
+      </div>
+
+      <div class="summary-card highlight">
+        <span class="label">comisión ganada</span>
+        <span class="value text-success">${{ (miComision()?.comision_calculada || 0) | number:'1.2-2' }}</span>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- seccion 3: tabla con historial de ventas -->
+<section class="module-card">
+  <h2>Historial de Mis Ventas</h2>
+  <p class="subtitle">listado de todas las ventas que has registrado en la plataforma</p>
+
+  @if (misVentas().length === 0) {
+    <p class="empty-state">aun no has registrado ninguna venta.</p>
+  } @else {
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>id</th>
+            <th>fecha</th>
+            <th class="text-right">monto</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (venta of misVentas(); track venta.id) {
+            <tr>
+              <td>#{{ venta.id }}</td>
+              <td>{{ venta.fecha | date:'yyyy-MM-dd HH:mm' }}</td>
+              <td class="text-right font-bold">${{ venta.monto | number:'1.2-2' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

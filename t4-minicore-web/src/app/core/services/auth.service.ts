@@ -3,34 +3,34 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs';
 
-// estructura de la respuesta que se espera del backend al hacer login
+// respuesta que manda el backend al iniciar sesion
 interface LoginResponse {
   token: string;
   user: {
     id: number;
     email: string;
     role: string;
+    name?: string;
+    last_name?: string;
+    vendedor_id?: number | null;
   };
 }
 
 @Injectable({
   providedIn: 'root'
 })
-
 export class AuthService {
-  // injectar las herramientas necesarias para hacer peticiones HTTP y navegar entre rutas
   private http = inject(HttpClient);
   private router = inject(Router);
 
-  // url del baclkend y la clave bajo la cual se guardará el token en el navegador
+  // ruta base del api de lucky y clave para el token
   private apiUrl = 'http://localhost:3000/api';
   private tokenKey = 'jwt_token';
 
   authErrorMessage = signal('');
 
-  // metodo para login
+  // envia las credenciales al backend
   login(email: string, password: string) {
-    // el backend de lucky  espera los datos agrupados bajo la clave "user"
     const body = {
       user: {
         email: email,
@@ -39,37 +39,63 @@ export class AuthService {
     };
 
     return this.http.post<LoginResponse>(`${this.apiUrl}/sign_ins`, body).pipe(
-      // 'tap' nos permite hacer una acción secundaria cuando la respuesta llega con éxito
+      // guardamos token y datos utiles del usuario logueado
       tap(response => {
         this.saveToken(response.token);
-        localStorage.setItem('user_role', response.user.role); // guardar el usuario en localStorage
+        localStorage.setItem('user_role', response.user.role);
+        localStorage.setItem('user_name', `${response.user.name || ''} ${response.user.last_name || ''}`.trim() || response.user.email);
+        
+        if (response.user.vendedor_id) {
+          localStorage.setItem('vendedor_id', response.user.vendedor_id.toString());
+        } else {
+          localStorage.removeItem('vendedor_id');
+        }
       })
     );
   }
 
+  // valida si el usuario es administrador
   isAdmin(): boolean {
     return localStorage.getItem('user_role') === 'Admin';
   }
 
-  // guardar el token en el localStorage del navegador
+  // valida si el usuario es vendedor asignado
+  isVendedor(): boolean {
+    return localStorage.getItem('user_role') === 'Regular' && !!localStorage.getItem('vendedor_id');
+  }
+
+  // obtiene el id del vendedor en sesion
+  getVendedorId(): number | null {
+    const id = localStorage.getItem('vendedor_id');
+    return id ? Number(id) : null;
+  }
+
+  // obtiene el nombre visible del usuario
+  getUserName(): string {
+    return localStorage.getItem('user_name') || 'Usuario';
+  }
+
+  // guarda el jwt en el navegador
   private saveToken(token: string): void {
     localStorage.setItem(this.tokenKey, token);
   }
 
-  // obtener token del localStorage del navegador
+  // lee el jwt guardado
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
   }
 
-  // saber si el usuario está logueado, es decir, si hay un token guardado en el localStorage
+  // revisa si hay una sesion activa
   isLoggedIn(): boolean {
     return this.getToken() !== null;
   }
 
-  // logout
+  // borra la sesion y manda al login
   logout(): void {
-    localStorage.removeItem(this.tokenKey); // eliminar el token del localStorage
-    localStorage.removeItem('user_role'); // eliminar el rol del usuario al hacer logout
+    localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem('user_role');
+    localStorage.removeItem('vendedor_id');
+    localStorage.removeItem('user_name');
     this.router.navigate(['/login']);
   }
 }

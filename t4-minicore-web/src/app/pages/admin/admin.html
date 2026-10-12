@@ -1,0 +1,255 @@
+<!-- barra superior de navegacion -->
+<header class="top-bar">
+  <div>
+    <h1>Panel de Administración</h1>
+    <p class="user-greeting">conectado como: <span>{{ userName }}</span> (administrador)</p>
+  </div>
+  <button type="button" class="btn-logout" (click)="logout()">cerrar sesión</button>
+</header>
+
+<!-- pestañas para alternar entre modulos -->
+<nav class="nav-tabs">
+  <button 
+    type="button" 
+    class="tab-btn" 
+    [class.active]="activeTab() === 'comisiones'"
+    (click)="cambiarTab('comisiones')">
+    reporte de comisiones
+  </button>
+  <button 
+    type="button" 
+    class="tab-btn" 
+    [class.active]="activeTab() === 'vendedores'"
+    (click)="cambiarTab('vendedores')">
+    gestión de vendedores
+  </button>
+  <button 
+    type="button" 
+    class="tab-btn" 
+    [class.active]="activeTab() === 'reglas'"
+    (click)="cambiarTab('reglas')">
+    reglas de comisión
+  </button>
+</nav>
+
+<!-- notificaciones de exito o error -->
+@if (mensaje()) {
+  <div class="alert success">{{ mensaje() }}</div>
+}
+@if (error()) {
+  <div class="alert danger">{{ error() }}</div>
+}
+
+<!-- pestaña 1: reporte consolidado de comisiones -->
+@if (activeTab() === 'comisiones') {
+  <section class="module-card">
+    <h2>Cálculo de Comisiones por Periodo</h2>
+    <p class="subtitle">filtra por rango de fechas para evaluar las comisiones de todos los vendedores</p>
+
+    <!-- formulario de fechas -->
+    <form class="filter-form" (ngSubmit)="cargarReporte()">
+      <div class="form-group">
+        <label for="fechaInicio">fecha inicio</label>
+        <input 
+          id="fechaInicio" 
+          type="date" 
+          name="fechaInicio" 
+          [(ngModel)]="fechaInicio" />
+      </div>
+
+      <div class="form-group">
+        <label for="fechaFin">fecha fin</label>
+        <input 
+          id="fechaFin" 
+          type="date" 
+          name="fechaFin" 
+          [(ngModel)]="fechaFin" />
+      </div>
+
+      <div class="filter-buttons">
+        <button type="submit" [disabled]="loading()">
+          {{ loading() ? 'calculando...' : 'filtrar y calcular' }}
+        </button>
+        <button type="button" class="btn-secondary" (click)="limpiarFiltroFechas()">limpiar</button>
+      </div>
+    </form>
+
+    <!-- tarjetas con resumen numerico -->
+    <div class="summary-cards">
+      <div class="summary-card">
+        <span class="label">total vendido en el periodo</span>
+        <span class="value">${{ totalVentas() | number:'1.2-2' }}</span>
+      </div>
+      <div class="summary-card highlight">
+        <span class="label">total comisiones generadas</span>
+        <span class="value">${{ totalComisiones() | number:'1.2-2' }}</span>
+      </div>
+    </div>
+
+    <!-- tabla de resultados -->
+    @if (comisiones().length === 0) {
+      <p class="empty-state">no se encontraron ventas en el periodo seleccionado.</p>
+    } @else {
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>vendedor</th>
+              <th>identificación</th>
+              <th class="text-right">total vendido</th>
+              <th class="text-center">% comisión</th>
+              <th class="text-right">comisión calculada</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (c of comisiones(); track c.vendedor_id) {
+              <tr>
+                <td class="font-bold">{{ c.nombre }}</td>
+                <td>{{ c.identificacion || '-' }}</td>
+                <td class="text-right">${{ c.total_vendido | number:'1.2-2' }}</td>
+                <td class="text-center badge-cell">
+                  <span class="badge">{{ c.porcentaje_comision }}%</span>
+                </td>
+                <td class="text-right text-success font-bold">${{ c.comision_calculada | number:'1.2-2' }}</td>
+              </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2">TOTAL GENERAL</td>
+              <td class="text-right">${{ totalVentas() | number:'1.2-2' }}</td>
+              <td>-</td>
+              <td class="text-right text-success font-bold">${{ totalComisiones() | number:'1.2-2' }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    }
+  </section>
+}
+
+<!-- pestaña 2: crud de vendedores -->
+@if (activeTab() === 'vendedores') {
+  <section class="module-card">
+    <h2>{{ vendedorEditandoId ? 'Editar Vendedor' : 'Registrar Nuevo Vendedor' }}</h2>
+    <form class="crud-form" (ngSubmit)="guardarVendedor()">
+      <div class="form-group">
+        <label for="vNombre">nombre completo</label>
+        <input 
+          id="vNombre" 
+          type="text" 
+          name="vNombre" 
+          placeholder="ej. Carlos Mendoza" 
+          [(ngModel)]="nuevoVendedor.nombre" />
+      </div>
+
+      <div class="form-group">
+        <label for="vIden">número de identificación / cédula</label>
+        <input 
+          id="vIden" 
+          type="text" 
+          name="vIden" 
+          placeholder="ej. 1712345678" 
+          [(ngModel)]="nuevoVendedor.identificacion" />
+      </div>
+
+      <div class="form-actions">
+        <button type="submit">{{ vendedorEditandoId ? 'guardar cambios' : 'crear vendedor' }}</button>
+        @if (vendedorEditandoId) {
+          <button type="button" class="btn-secondary" (click)="cancelarEdicionVendedor()">cancelar</button>
+        }
+      </div>
+    </form>
+
+    <h3 class="section-title">Listado de Vendedores</h3>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>id</th>
+            <th>nombre</th>
+            <th>identificación</th>
+            <th class="text-right">acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (v of vendedores(); track v.id) {
+            <tr>
+              <td>{{ v.id }}</td>
+              <td class="font-bold">{{ v.nombre }}</td>
+              <td>{{ v.identificacion }}</td>
+              <td class="text-right action-buttons">
+                <button type="button" class="btn-sm btn-edit" (click)="editarVendedor(v)">editar</button>
+                <button type="button" class="btn-sm btn-delete" (click)="eliminarVendedor(v.id)">eliminar</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+}
+
+<!-- pestaña 3: crud de reglas de comision -->
+@if (activeTab() === 'reglas') {
+  <section class="module-card">
+    <h2>{{ reglaEditandoId ? 'Editar Regla de Comisión' : 'Nueva Regla Escalonada' }}</h2>
+    <form class="crud-form" (ngSubmit)="guardarRegla()">
+      <div class="form-group">
+        <label for="rMonto">monto mínimo ($)</label>
+        <input 
+          id="rMonto" 
+          type="number" 
+          step="0.01" 
+          name="rMonto" 
+          placeholder="ej. 5000" 
+          [(ngModel)]="nuevaRegla.monto_minimo" />
+      </div>
+
+      <div class="form-group">
+        <label for="rPct">porcentaje de comisión (%)</label>
+        <input 
+          id="rPct" 
+          type="number" 
+          step="0.1" 
+          name="rPct" 
+          placeholder="ej. 7.5" 
+          [(ngModel)]="nuevaRegla.porcentaje_comision" />
+      </div>
+
+      <div class="form-actions">
+        <button type="submit">{{ reglaEditandoId ? 'guardar cambios' : 'crear regla' }}</button>
+        @if (reglaEditandoId) {
+          <button type="button" class="btn-secondary" (click)="cancelarEdicionRegla()">cancelar</button>
+        }
+      </div>
+    </form>
+
+    <h3 class="section-title">Escalones de Comisión Configurados</h3>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>id</th>
+            <th>monto mínimo</th>
+            <th>porcentaje aplicado</th>
+            <th class="text-right">acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (r of reglas(); track r.id) {
+            <tr>
+              <td>{{ r.id }}</td>
+              <td class="font-bold">${{ r.monto_minimo | number:'1.2-2' }}</td>
+              <td><span class="badge">{{ r.porcentaje_comision }}%</span></td>
+              <td class="text-right action-buttons">
+                <button type="button" class="btn-sm btn-edit" (click)="editarRegla(r)">editar</button>
+                <button type="button" class="btn-sm btn-delete" (click)="eliminarRegla(r.id)">eliminar</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+}
