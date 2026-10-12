@@ -14,3 +14,4 @@ echo "Verificando y aplicando datos iniciales..."
 # Iniciar el servidor web de Lucky
 echo "Iniciando servidor web en el puerto ${PORT:-3000}..."
 exec ./bin/app
+

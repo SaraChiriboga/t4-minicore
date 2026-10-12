@@ -19,11 +19,12 @@ services:
         generateValue: true
 
   # Frontend SPA en Angular
-  - type: static_site
+  - type: web
     name: t4-minicore-web
+    runtime: static
     rootDir: t4-minicore-web
     buildCommand: npm install && npm run build
-    publishPath: dist/t4-minicore-web/browser
+    staticPublishPath: dist/t4-minicore-web/browser
     routes:
       # Regla para Single Page Application (SPA routing)
       - type: rewrite
@@ -36,3 +37,4 @@ databases:
     databaseName: t4_minicore_api_production
     user: lucky
     plan: free
+
