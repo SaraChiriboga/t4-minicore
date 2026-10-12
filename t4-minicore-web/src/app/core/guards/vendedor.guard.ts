@@ -7,12 +7,11 @@ export const vendedorGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  // solo pasa si inicio sesion y tiene rol de vendedor
-  if (authService.isLoggedIn() && authService.isVendedor()) {
+  // si esta logueado y no es admin, es vendedor autorizado
+  if (authService.isLoggedIn() && !authService.isAdmin()) {
     return true;
   }
 
   // si no tiene permiso lo mandamos al login
   return router.parseUrl('/login');
 };
-

@@ -5,12 +5,11 @@ import { AuthService } from '../../core/services/auth.service'
 import { ResponsiveService } from '../../core/services/responsive.service';
 
 @Component({
-  imports: [FormsModule], // permite usar [(ngModel)] en el formulario
+  imports: [FormsModule],
   selector: 'app-login',
   styleUrl: './login.css',
   templateUrl: './login.html',
 })
-
 export class Login implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
@@ -21,12 +20,11 @@ export class Login implements OnInit {
   errorMessage = signal('');
 
   ngOnInit() {
-
-    // si ya tiene sesion activa lo redirigimos segun su rol
+    // si ya tiene sesion activa lo enviamos directo a su modulo
     if (this.authService.isLoggedIn()) {
       if (this.authService.isAdmin()) {
         this.router.navigate(['/admin']);
-      } else if (this.authService.isVendedor()) {
+      } else {
         this.router.navigate(['/portal-vendedor']);
       }
     }
@@ -35,19 +33,23 @@ export class Login implements OnInit {
   onSubmit() {
     this.errorMessage.set('');
 
-    this.authService.login(this.email, this.password).subscribe({
+    const cleanEmail = this.email.trim();
+    if (!cleanEmail || !this.password) {
+      this.errorMessage.set('ingresa tu correo y contraseña');
+      return;
+    }
+
+    this.authService.login(cleanEmail, this.password).subscribe({
       next: () => {
         // redirigimos segun el rol del usuario autenticado
         if (this.authService.isAdmin()) {
           this.router.navigate(['/admin']);
-        } else if (this.authService.isVendedor()) {
-          this.router.navigate(['/portal-vendedor']);
         } else {
-          this.errorMessage.set('acceso denegado: este usuario no tiene un perfil o vendedor asignado');
+          this.router.navigate(['/portal-vendedor']);
         }
       },
       error: (err) => {
-        this.errorMessage.set('Credenciales incorrectas o servidor no disponible');
+        this.errorMessage.set('credenciales incorrectas o servidor no disponible');
         console.error(err);
       }
     });
