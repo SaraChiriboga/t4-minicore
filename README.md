@@ -14,6 +14,10 @@ Construida bajo el patrón arquitectónico **Modelo-Vista-Controlador (MVC)** de
 
 ---
 
+## 📹 Video Demostrativo
+**Link de Youtube:** https://youtu.be/6R8ZbvCH1Y8
+---
+
 ## 📑 Tabla de Contenidos
 
 1. [✨ Características Destacadas](#-características-destacadas)
